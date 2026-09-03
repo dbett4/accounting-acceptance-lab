@@ -48,7 +48,7 @@ Show:
 - lexical-only citation accuracy: 0.625 (10/16)
 - hybrid+rered/reranked citation accuracy: 1.0 (16/16)
 - naive retry effects: 2; effect-safe effects: 1
-- self-attested false-accept rate: 0.6153846154; independent rule gate: 0
+- self-attested false-accept rate: 0.6 (6/10); independent rule gate: 0
 - final false accepts and unsupported accepts: 0
 
 Say: “The perfect hybrid score is only for this small synthetic fixture. The verifier is executable independent logic, not third-party evidence.”
