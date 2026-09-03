@@ -11,5 +11,6 @@ run env PYTHONPATH=src python3 -m unittest discover -s tests -v
 run env PYTHONPATH=src python3 -m aal.cli demo
 run env PYTHONPATH=src python3 -m aal.cli benchmark
 run env PYTHONPATH=src python3 scripts/restart_proof.py
+run env PYTHONPATH=src python3 scripts/gateway_proof.py
 run python3 scripts/secret_scan.py
 printf '\nALL_LOCAL_PROOF_GATES_PASSED\n' | tee -a .state/artifacts/proof-output.txt

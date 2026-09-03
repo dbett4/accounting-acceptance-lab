@@ -1,0 +1,50 @@
+{
+  "candidate": "acceptance_gateway",
+  "controls": {
+    "concurrent_workers_single_execution": true,
+    "database_interruption_readiness_failure": true,
+    "duplicate_delivery_one_job": true,
+    "expired_claim_recovered": true,
+    "http_authentication_and_tenant_isolation": true,
+    "load_executed_without_errors": true,
+    "long_running_claim_renewal_single_effect": true,
+    "proposal_timeout_bounded_retry": true,
+    "restart_persistence": true,
+    "schema_upgrade_rollback_native_readback": true,
+    "stale_generation_blocked": true,
+    "strict_request_and_rate_bounds": true,
+    "structured_event_redaction": true,
+    "tenant_read_list_idempotency_isolated": true,
+    "unknown_effect_read_before_retry": true
+  },
+  "evidence_identity": "deterministic_control_outcomes_only",
+  "limitations": [
+    "synthetic_fixtures",
+    "localhost_only",
+    "credential_free",
+    "not_capacity_or_slo_evidence",
+    "w3c_correlated_structured_spans_not_exported_opentelemetry"
+  ],
+  "load_workload": {
+    "concurrency": 8,
+    "method": "POST",
+    "request": {
+      "case_id": "C01"
+    },
+    "requests": 100,
+    "route": "/v1/jobs",
+    "transport": "localhost_http"
+  },
+  "operational_summary": {
+    "event_counts": {
+      "job_attempt": 5
+    },
+    "job_states": {
+      "failed": 2,
+      "succeeded": 3
+    },
+    "schema_version": 1,
+    "total_attempts": 7
+  },
+  "runtime_timing_artifact": ".state/artifacts/gateway_load_runtime.json"
+}
