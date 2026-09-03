@@ -32,8 +32,9 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="aal-gateway-proof-") as td:
         root = Path(td)
 
-        method_names = ("PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "PROPFIND")
-        method_tokens = {f"proof-method-{index}-token": f"method-tenant-{index}" for index in range(len(method_names))}
+        method_names = ("PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT", "PROPFIND", "FROB")
+        method_paths = ("/v1", "/v1/", "/v1/jobs", "/v1/nope")
+        method_tokens = {f"proof-method-{index}-token": f"method-tenant-{index}" for index in range(len(method_names) * len(method_paths))}
         request_secret_token = "proof-request-secret-token"
         http_tokens = {
             "proof-alpha-token": "tenant-a",
@@ -96,8 +97,8 @@ def main() -> None:
                 and oversized[0] == 413 and oversized[1]["error"]["code"] == "request_too_large"
             )
             method_results = []
-            for method, token in zip(method_names, method_tokens):
-                method_results.append((http_request(method, "/v1/jobs")[0], http_request(method, "/v1/jobs", token)[0]))
+            for (method, path), token in zip(((method, path) for method in method_names for path in method_paths), method_tokens):
+                method_results.append((http_request(method, path)[0], http_request(method, path, token)[0]))
             controls["all_v1_methods_authenticated"] = all(result == (401, 405) for result in method_results)
 
             request_secret = http_request(
@@ -111,12 +112,12 @@ def main() -> None:
                 "redaction_probe", tenant_id="tenant-a", job_id=http_job_id, trace_id="9" * 32,
                 span_id="8" * 16, request_id="redaction-proof", state_transition=None,
                 duration_ms=None, error_class=None,
-                extra={"authorization": "proof-header-secret", "nested": {"token": "proof-nested-secret", "client_secret": "proof-client-secret", "access-token": "proof-access-secret", "clientSecret": "proof-camel-client-secret", "accessToken": "proof-camel-access-secret", "apiKey": "proof-camel-api-secret", "passwordHash": "proof-camel-password-secret"}},
+                extra={"authorization": "proof-header-secret", "nested": {"token": "proof-nested-secret", "client_secret": "proof-client-secret", "access-token": "proof-access-secret", "clientSecret": "proof-camel-client-secret", "accessToken": "proof-camel-access-secret", "apiKey": "proof-camel-api-secret", "passwordHash": "proof-camel-password-secret", "clientsecret": "proof-compact-client-secret", "accesstoken": "proof-compact-access-secret", "apikey": "proof-compact-api-secret", "passwordhash": "proof-compact-password-secret"}},
             )
             event_text = json.dumps(server.gateway_store.events(), sort_keys=True)
             controls["structured_event_redaction"] = all(
-                secret not in event_text for secret in [*http_tokens, "proof-header-secret", "proof-nested-secret", "proof-client-secret", "proof-access-secret", "proof-camel-client-secret", "proof-camel-access-secret", "proof-camel-api-secret", "proof-camel-password-secret"]
-            ) and event_text.count("[REDACTED]") >= 8
+                secret not in event_text for secret in [*http_tokens, "proof-header-secret", "proof-nested-secret", "proof-client-secret", "proof-access-secret", "proof-camel-client-secret", "proof-camel-access-secret", "proof-camel-api-secret", "proof-camel-password-secret", "proof-compact-client-secret", "proof-compact-access-secret", "proof-compact-api-secret", "proof-compact-password-secret"]
+            ) and event_text.count("[REDACTED]") >= 12
         finally:
             server.shutdown()
             server.server_close()

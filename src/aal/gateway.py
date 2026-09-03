@@ -26,6 +26,10 @@ IDEMPOTENCY_KEY = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
 ALLOWED_REQUEST_FIELDS = {"case_id", "inject_fault"}
 ALLOWED_FAULTS = {"proposal_timeout"}
 SENSITIVE_KEYS = {"api_key", "token", "secret", "password", "authorization", "cookie", "credential"}
+SENSITIVE_COMPACT_KEYS = {
+    "apikey", "accesstoken", "clientsecret", "passwordhash", "refreshtoken",
+    "privatekey", "signingkey", "sessiontoken", "authtoken", "bearertoken", "clientcredential",
+}
 
 
 def _canonical(value: Any) -> str:
@@ -44,7 +48,8 @@ def _is_sensitive_key(key: str) -> bool:
     separated = re.sub(r"(?<=[a-z0-9])(?=[A-Z])", "_", key)
     normalized = re.sub(r"[^a-z0-9]+", "_", separated.lower()).strip("_")
     parts = set(normalized.split("_"))
-    return normalized in SENSITIVE_KEYS or bool(parts & SENSITIVE_KEYS)
+    compact = normalized.replace("_", "")
+    return normalized in SENSITIVE_KEYS or compact in SENSITIVE_COMPACT_KEYS or bool(parts & SENSITIVE_KEYS)
 
 
 def _deep_redact(value: Any) -> Any:
@@ -626,7 +631,7 @@ def make_gateway_server(host: str, port: int, db_path: str | Path, artifact_dir:
 
         def _unsupported_method(self) -> None:
             path = urlparse(self.path).path
-            if path.startswith("/v1/"):
+            if path == "/v1" or path.startswith("/v1/"):
                 tenant, started = self._begin()
                 if not tenant:
                     return

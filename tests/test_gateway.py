@@ -182,7 +182,7 @@ class GatewayStoreTest(unittest.TestCase):
         job = self.store.submit("tenant-a", "secretish", {"case_id": "C01"}, "0123456789abcdef0123456789abcdef", "request-1") [0]
         self.store.record_event("request", tenant_id="tenant-a", job_id=job["job_id"], trace_id="0" * 32,
                                 span_id="1" * 16, request_id="request-1", state_transition="queued",
-                                duration_ms=1.2, error_class=None, extra={"authorization": "hidden", "nested": {"token": "also-hidden", "client_secret": "client-hidden", "access-token": "access-hidden", "clientSecret": "camel-client-hidden", "accessToken": "camel-access-hidden", "apiKey": "camel-api-hidden", "passwordHash": "camel-password-hidden"}})
+                                duration_ms=1.2, error_class=None, extra={"authorization": "hidden", "nested": {"token": "also-hidden", "client_secret": "client-hidden", "access-token": "access-hidden", "clientSecret": "camel-client-hidden", "accessToken": "camel-access-hidden", "apiKey": "camel-api-hidden", "passwordHash": "camel-password-hidden", "clientsecret": "compact-client-hidden", "accesstoken": "compact-access-hidden", "apikey": "compact-api-hidden", "passwordhash": "compact-password-hidden"}})
         encoded = json.dumps(self.store.events())
         self.assertNotIn("hidden", encoded)
         event = self.store.events()[-1]
@@ -196,7 +196,7 @@ class GatewayHttpTest(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         self.server = make_gateway_server("127.0.0.1", 0, Path(self.tmp.name) / "gateway.db",
                                           Path(self.tmp.name) / "artifacts", {"alpha": "tenant-a", "beta": "tenant-b"},
-                                          max_request_bytes=128, rate_limit=20, rate_window_seconds=60)
+                                          max_request_bytes=128, rate_limit=100, rate_window_seconds=60)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
         self.host, self.port = self.server.server_address
@@ -266,12 +266,13 @@ class GatewayHttpTest(unittest.TestCase):
         self.assertEqual(self.request("GET", "/ready")[0], 503)
 
     def test_unsupported_v1_methods_require_authentication(self):
-        for method in ("PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "PROPFIND"):
-            self.assertEqual(self.request(method, "/v1/jobs")[0], 401)
-            status, body, _ = self.request(method, "/v1/jobs", "alpha")
-            self.assertEqual(status, 405)
-            if method != "HEAD":
-                self.assertEqual(body["error"]["code"], "method_not_allowed")
+        for method in ("PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT", "PROPFIND", "FROB"):
+            for path in ("/v1", "/v1/", "/v1/jobs", "/v1/nope"):
+                self.assertEqual(self.request(method, path)[0], 401)
+                status, body, _ = self.request(method, path, "alpha")
+                self.assertEqual(status, 405)
+                if method != "HEAD":
+                    self.assertEqual(body["error"]["code"], "method_not_allowed")
 
     def test_caller_request_id_is_hashed_before_persistence(self):
         status, _, headers = self.request("POST", "/v1/jobs", "alpha", {"case_id": "C01"},
