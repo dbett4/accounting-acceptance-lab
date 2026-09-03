@@ -182,7 +182,7 @@ class GatewayStoreTest(unittest.TestCase):
         job = self.store.submit("tenant-a", "secretish", {"case_id": "C01"}, "0123456789abcdef0123456789abcdef", "request-1") [0]
         self.store.record_event("request", tenant_id="tenant-a", job_id=job["job_id"], trace_id="0" * 32,
                                 span_id="1" * 16, request_id="request-1", state_transition="queued",
-                                duration_ms=1.2, error_class=None, extra={"authorization": "hidden", "nested": {"token": "also-hidden", "client_secret": "client-hidden", "access-token": "access-hidden"}})
+                                duration_ms=1.2, error_class=None, extra={"authorization": "hidden", "nested": {"token": "also-hidden", "client_secret": "client-hidden", "access-token": "access-hidden", "clientSecret": "camel-client-hidden", "accessToken": "camel-access-hidden", "apiKey": "camel-api-hidden", "passwordHash": "camel-password-hidden"}})
         encoded = json.dumps(self.store.events())
         self.assertNotIn("hidden", encoded)
         event = self.store.events()[-1]
@@ -213,7 +213,7 @@ class GatewayHttpTest(unittest.TestCase):
         if body is not None and "Content-Type" not in merged: merged["Content-Type"] = "application/json"
         conn.request(method, path, body=payload, headers=merged)
         response = conn.getresponse(); raw = response.read(); response_headers = dict(response.getheaders()); conn.close()
-        return response.status, json.loads(raw), response_headers
+        return response.status, json.loads(raw) if raw else {}, response_headers
 
     def test_authentication_strict_json_request_ids_traceparent_and_tenant_scope(self):
         status, error, _ = self.request("POST", "/v1/jobs", body={"case_id": "C01"}, headers={"Idempotency-Key": "k1"})
@@ -266,9 +266,21 @@ class GatewayHttpTest(unittest.TestCase):
         self.assertEqual(self.request("GET", "/ready")[0], 503)
 
     def test_unsupported_v1_methods_require_authentication(self):
-        self.assertEqual(self.request("PUT", "/v1/jobs")[0], 401)
-        status, body, _ = self.request("PUT", "/v1/jobs", "alpha")
-        self.assertEqual((status, body["error"]["code"]), (405, "method_not_allowed"))
+        for method in ("PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "PROPFIND"):
+            self.assertEqual(self.request(method, "/v1/jobs")[0], 401)
+            status, body, _ = self.request(method, "/v1/jobs", "alpha")
+            self.assertEqual(status, 405)
+            if method != "HEAD":
+                self.assertEqual(body["error"]["code"], "method_not_allowed")
+
+    def test_caller_request_id_is_hashed_before_persistence(self):
+        status, _, headers = self.request("POST", "/v1/jobs", "alpha", {"case_id": "C01"},
+                                          {"Idempotency-Key": "request-id-secret", "X-Request-ID": "alpha"})
+        self.assertEqual(status, 202)
+        self.assertEqual(headers["X-Request-ID"], "alpha")
+        jobs, _ = self.server.gateway_store.list_jobs("tenant-a", 100, None)
+        self.assertNotIn("alpha", {job["request_id"] for job in jobs})
+        self.assertNotIn("alpha", {event["request_id"] for event in self.server.gateway_store.events()})
 
     def test_worker_is_not_an_http_route(self):
         status, body, _ = self.request("POST", "/v1/worker", "alpha", {})

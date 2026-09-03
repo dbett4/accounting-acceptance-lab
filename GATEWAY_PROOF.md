@@ -10,14 +10,14 @@ The repository gate runs the original Accounting Acceptance Lab suite and demo/b
 
 ## Acceptance evidence
 
-- 52 unit and integration tests, including all 32 pre-gateway tests.
+- 53 unit and integration tests, including all 32 pre-gateway tests.
 - Tenant identity is derived from bearer-token bindings supplied at runtime; callers cannot select a tenant in request JSON.
 - Job submission is idempotent per tenant and request payload. Cross-tenant reads and lists are scoped by the authenticated tenant.
 - SQLite `BEGIN IMMEDIATE` claims prevent simultaneous ownership. Expired claims are recoverable, claim attempts are bounded, and claim tokens fence completion.
 - Workers renew live leases while processing; the slow-worker test crosses the original lease boundary and proves one execution and one effect.
 - Queued and terminal jobs survive a store restart. `/ready` fails closed when SQLite is unavailable.
 - Synthetic timeout, duplicate delivery, stale generation, uncertain effect, and database interruption paths are exercised.
-- Structured events carry request, trace, and span correlation while tenant identifiers and secret-like fields are redacted.
+- Structured events carry request, trace, and span correlation while tenant identifiers and secret-like fields are redacted. Caller-supplied request IDs are hashed before persistence while the HTTP response preserves correlation.
 - The local load harness sends 100 authenticated HTTP submissions at concurrency 8 and records measured p50/p95 latency. This is a repeatable workload observation, not an SLO or production-capacity claim.
 - A disposable SQLite database upgrades and rolls back one schema revision with native schema/data readback.
 

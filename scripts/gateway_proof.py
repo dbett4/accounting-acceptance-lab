@@ -32,7 +32,16 @@ def main() -> None:
     with tempfile.TemporaryDirectory(prefix="aal-gateway-proof-") as td:
         root = Path(td)
 
-        http_tokens = {"proof-alpha-token": "tenant-a", "proof-beta-token": "tenant-b", "proof-gamma-token": "tenant-c"}
+        method_names = ("PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "PROPFIND")
+        method_tokens = {f"proof-method-{index}-token": f"method-tenant-{index}" for index in range(len(method_names))}
+        request_secret_token = "proof-request-secret-token"
+        http_tokens = {
+            "proof-alpha-token": "tenant-a",
+            "proof-beta-token": "tenant-b",
+            "proof-gamma-token": "tenant-c",
+            request_secret_token: "request-secret-tenant",
+            **method_tokens,
+        }
         server = make_gateway_server("127.0.0.1", 0, root / "http.db", root / "http-artifacts",
                                      http_tokens, max_request_bytes=64, rate_limit=3, rate_window_seconds=60)
         server_thread = threading.Thread(target=server.serve_forever, daemon=True)
@@ -51,7 +60,8 @@ def main() -> None:
             try:
                 connection.request(method, path, body=payload, headers=request_headers)
                 response = connection.getresponse()
-                return response.status, json.loads(response.read())
+                raw = response.read()
+                return response.status, json.loads(raw) if raw else {}
             finally:
                 connection.close()
 
@@ -85,16 +95,28 @@ def main() -> None:
                 and rate_limited[0] == 429 and rate_limited[1]["error"]["code"] == "rate_limited"
                 and oversized[0] == 413 and oversized[1]["error"]["code"] == "request_too_large"
             )
+            method_results = []
+            for method, token in zip(method_names, method_tokens):
+                method_results.append((http_request(method, "/v1/jobs")[0], http_request(method, "/v1/jobs", token)[0]))
+            controls["all_v1_methods_authenticated"] = all(result == (401, 405) for result in method_results)
+
+            request_secret = http_request(
+                "POST", "/v1/jobs", request_secret_token, {"case_id": "C01"},
+                {"Idempotency-Key": "request-secret", "X-Request-ID": request_secret_token},
+            )
+            request_jobs, _ = server.gateway_store.list_jobs("request-secret-tenant", 100, None)
+            request_persistence = json.dumps({"jobs": request_jobs, "events": server.gateway_store.events()}, sort_keys=True)
+            controls["caller_request_id_secret_not_persisted"] = request_secret[0] == 202 and request_secret_token not in request_persistence
             server.gateway_store.record_event(
                 "redaction_probe", tenant_id="tenant-a", job_id=http_job_id, trace_id="9" * 32,
                 span_id="8" * 16, request_id="redaction-proof", state_transition=None,
                 duration_ms=None, error_class=None,
-                extra={"authorization": "proof-header-secret", "nested": {"token": "proof-nested-secret", "client_secret": "proof-client-secret", "access-token": "proof-access-secret"}},
+                extra={"authorization": "proof-header-secret", "nested": {"token": "proof-nested-secret", "client_secret": "proof-client-secret", "access-token": "proof-access-secret", "clientSecret": "proof-camel-client-secret", "accessToken": "proof-camel-access-secret", "apiKey": "proof-camel-api-secret", "passwordHash": "proof-camel-password-secret"}},
             )
             event_text = json.dumps(server.gateway_store.events(), sort_keys=True)
             controls["structured_event_redaction"] = all(
-                secret not in event_text for secret in [*http_tokens, "proof-header-secret", "proof-nested-secret", "proof-client-secret", "proof-access-secret"]
-            ) and event_text.count("[REDACTED]") >= 4
+                secret not in event_text for secret in [*http_tokens, "proof-header-secret", "proof-nested-secret", "proof-client-secret", "proof-access-secret", "proof-camel-client-secret", "proof-camel-access-secret", "proof-camel-api-secret", "proof-camel-password-secret"]
+            ) and event_text.count("[REDACTED]") >= 8
         finally:
             server.shutdown()
             server.server_close()
