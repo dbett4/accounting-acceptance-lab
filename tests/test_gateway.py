@@ -195,7 +195,7 @@ class GatewayHttpTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.server = make_gateway_server("127.0.0.1", 0, Path(self.tmp.name) / "gateway.db",
-                                          Path(self.tmp.name) / "artifacts", {"alpha": "tenant-a", "beta": "tenant-b"},
+                                          Path(self.tmp.name) / "artifacts", {"alpha": "tenant-a", "beta": "tenant-b", "0123456789abcdef0123456789abcdef": "tenant-c"},
                                           max_request_bytes=128, rate_limit=100, rate_window_seconds=60)
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -275,14 +275,16 @@ class GatewayHttpTest(unittest.TestCase):
                     self.assertEqual(body["error"]["code"], "method_not_allowed")
 
     def test_caller_request_and_idempotency_ids_are_hashed_before_persistence(self):
-        status, _, headers = self.request("POST", "/v1/jobs", "alpha", {"case_id": "C01"},
-                                          {"Idempotency-Key": "alpha", "X-Request-ID": "alpha"})
+        probe_value = "0123456789abcdef0123456789abcdef"
+        status, _, headers = self.request("POST", "/v1/jobs", probe_value, {"case_id": "C01"},
+                                          {"Idempotency-Key": probe_value, "X-Request-ID": probe_value,
+                                           "traceparent": f"00-{probe_value}-0123456789abcdef-01"})
         self.assertEqual(status, 202)
-        self.assertEqual(headers["X-Request-ID"], "alpha")
-        jobs, _ = self.server.gateway_store.list_jobs("tenant-a", 100, None)
-        self.assertNotIn("alpha", {job["request_id"] for job in jobs})
-        self.assertNotIn("alpha", {job["idempotency_digest"] for job in jobs})
-        self.assertNotIn("alpha", {event["request_id"] for event in self.server.gateway_store.events()})
+        self.assertEqual(headers["X-Request-ID"], probe_value)
+        self.assertEqual(headers["traceparent"].split("-")[1], probe_value)
+        jobs, _ = self.server.gateway_store.list_jobs("tenant-c", 100, None)
+        persisted = json.dumps({"jobs": jobs, "events": self.server.gateway_store.events()}, sort_keys=True)
+        self.assertNotIn(probe_value, persisted)
 
     def test_worker_is_not_an_http_route(self):
         status, body, _ = self.request("POST", "/v1/worker", "alpha", {})

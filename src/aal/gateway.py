@@ -494,6 +494,10 @@ def make_gateway_server(host: str, port: int, db_path: str | Path, artifact_dir:
                 self._error(400, "invalid_request_id", "request ID is invalid")
                 return None
             self._request_id, self._trace_id, self._span_id = request_id, trace_id, _new_span_id()
+            self._persisted_trace_id = (
+                _digest("trace:" + trace_id)[:32]
+                if incoming else trace_id
+            )
             self._persisted_request_id = (
                 "rid_" + _digest("request:" + request_id)[:24]
                 if self.headers.get("X-Request-ID") else request_id
@@ -564,7 +568,7 @@ def make_gateway_server(host: str, port: int, db_path: str | Path, artifact_dir:
                     transition: str | None = None, error_class: str | None = None) -> None:
             if not tenant or not store.health_probe():
                 return
-            store.record_event("http_request", tenant_id=tenant, job_id=job_id, trace_id=self._trace_id,
+            store.record_event("http_request", tenant_id=tenant, job_id=job_id, trace_id=self._persisted_trace_id,
                                span_id=self._span_id, request_id=self._persisted_request_id, state_transition=transition,
                                duration_ms=round((time.perf_counter() - started) * 1000, 3),
                                error_class=error_class, extra={"method": self.command, "status": status})
@@ -588,7 +592,7 @@ def make_gateway_server(host: str, port: int, db_path: str | Path, artifact_dir:
             if not IDEMPOTENCY_KEY.fullmatch(key):
                 self._error(400, "invalid_idempotency_key", "a valid Idempotency-Key is required"); self._record(tenant, started, 400, error_class="invalid_request"); return
             try:
-                job, created = store.submit(tenant, key, body, self._trace_id, self._persisted_request_id)
+                job, created = store.submit(tenant, key, body, self._persisted_trace_id, self._persisted_request_id)
             except ValueError:
                 self._error(409, "idempotency_conflict", "idempotency key was used for another request")
                 self._record(tenant, started, 409, error_class="idempotency_conflict"); return

@@ -35,7 +35,7 @@ def main() -> None:
         method_names = ("PUT", "PATCH", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT", "PROPFIND", "FROB")
         method_paths = ("/v1", "/v1/", "/v1/jobs", "/v1/nope")
         method_tokens = {f"proof-method-{index}-token": f"method-tenant-{index}" for index in range(len(method_names) * len(method_paths))}
-        request_secret_token = "proof-request-secret-token"
+        request_secret_token = "abcdef0123456789abcdef0123456789"
         http_tokens = {
             "proof-alpha-token": "tenant-a",
             "proof-beta-token": "tenant-b",
@@ -103,7 +103,8 @@ def main() -> None:
 
             request_secret = http_request(
                 "POST", "/v1/jobs", request_secret_token, {"case_id": "C01"},
-                {"Idempotency-Key": request_secret_token, "X-Request-ID": request_secret_token},
+                {"Idempotency-Key": request_secret_token, "X-Request-ID": request_secret_token,
+                 "traceparent": f"00-{request_secret_token}-0123456789abcdef-01"},
             )
             request_jobs, _ = server.gateway_store.list_jobs("request-secret-tenant", 100, None)
             request_persistence = json.dumps({"jobs": request_jobs, "events": server.gateway_store.events()}, sort_keys=True)
