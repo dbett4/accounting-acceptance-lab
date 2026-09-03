@@ -67,9 +67,15 @@ class GatewayStoreTest(unittest.TestCase):
         recovered = self.store.claim("third", lease_seconds=1, now=101.1)
         self.assertEqual(recovered["job_id"], job["job_id"])
         self.assertEqual(recovered["attempts"], 2)
-        self.assertFalse(self.store.complete(job["job_id"], claimed[0]["claim_token"], "succeeded", "case:x", "effect:x"))
-        self.assertTrue(self.store.complete(job["job_id"], recovered["claim_token"], "succeeded", "case:x", "effect:x"))
+        self.assertFalse(self.store.complete(job["job_id"], claimed[0]["claim_token"], "succeeded", "case:x", "effect:x", now=101.2))
+        self.assertTrue(self.store.complete(job["job_id"], recovered["claim_token"], "succeeded", "case:x", "effect:x", now=101.2))
         other.close()
+
+    def test_expired_claim_cannot_complete_before_reclamation(self):
+        job = self.store.submit("tenant-a", "expired-completion", {"case_id": "C01"}, "t", "r")[0]
+        claim = self.store.claim("worker", lease_seconds=1, now=100.0)
+        self.assertFalse(self.store.complete(job["job_id"], claim["claim_token"], "succeeded", "case:C01", None, now=101.1))
+        self.assertEqual(self.store.get_job("tenant-a", job["job_id"])["state"], "running")
 
     def test_expired_claim_recovery_stops_at_attempt_bound(self):
         job = self.store.submit("tenant-a", "bounded-claims", {"case_id": "C01"}, "t", "r")[0]
@@ -176,7 +182,7 @@ class GatewayStoreTest(unittest.TestCase):
         job = self.store.submit("tenant-a", "secretish", {"case_id": "C01"}, "0123456789abcdef0123456789abcdef", "request-1") [0]
         self.store.record_event("request", tenant_id="tenant-a", job_id=job["job_id"], trace_id="0" * 32,
                                 span_id="1" * 16, request_id="request-1", state_transition="queued",
-                                duration_ms=1.2, error_class=None, extra={"authorization": "hidden", "nested": {"token": "also-hidden"}})
+                                duration_ms=1.2, error_class=None, extra={"authorization": "hidden", "nested": {"token": "also-hidden", "client_secret": "client-hidden", "access-token": "access-hidden"}})
         encoded = json.dumps(self.store.events())
         self.assertNotIn("hidden", encoded)
         event = self.store.events()[-1]
@@ -259,6 +265,11 @@ class GatewayHttpTest(unittest.TestCase):
         self.server.gateway_store.close()
         self.assertEqual(self.request("GET", "/ready")[0], 503)
 
+    def test_unsupported_v1_methods_require_authentication(self):
+        self.assertEqual(self.request("PUT", "/v1/jobs")[0], 401)
+        status, body, _ = self.request("PUT", "/v1/jobs", "alpha")
+        self.assertEqual((status, body["error"]["code"]), (405, "method_not_allowed"))
+
     def test_worker_is_not_an_http_route(self):
         status, body, _ = self.request("POST", "/v1/worker", "alpha", {})
         self.assertEqual((status, body["error"]["code"]), (404, "not_found"))
@@ -298,6 +309,7 @@ class AuthenticationAndMigrationTest(unittest.TestCase):
             db.execute("CREATE TABLE cases(case_id TEXT PRIMARY KEY)")
             db.execute("INSERT INTO cases VALUES('preserved')")
             db.commit()
+            before_schema = db.execute("SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name").fetchall()
             upgrade_gateway(db)
             self.assertEqual(db.execute("SELECT version FROM gateway_schema_version").fetchone()[0], 1)
             self.assertIn("gateway_jobs", {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")})
@@ -305,6 +317,8 @@ class AuthenticationAndMigrationTest(unittest.TestCase):
             tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
             self.assertNotIn("gateway_jobs", tables)
             self.assertEqual(db.execute("SELECT case_id FROM cases").fetchone()[0], "preserved")
+            after_schema = db.execute("SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name").fetchall()
+            self.assertEqual(after_schema, before_schema)
             db.close()
 
 

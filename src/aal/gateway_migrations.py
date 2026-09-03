@@ -14,7 +14,7 @@ def upgrade_gateway(db: sqlite3.Connection) -> None:
             version INTEGER NOT NULL
         );
         CREATE TABLE IF NOT EXISTS gateway_jobs(
-            seq INTEGER PRIMARY KEY AUTOINCREMENT,
+            seq INTEGER PRIMARY KEY,
             job_id TEXT NOT NULL UNIQUE,
             tenant_id TEXT NOT NULL,
             idempotency_key TEXT NOT NULL,
@@ -40,7 +40,7 @@ def upgrade_gateway(db: sqlite3.Connection) -> None:
         CREATE INDEX IF NOT EXISTS gateway_jobs_tenant_page
             ON gateway_jobs(tenant_id, seq DESC);
         CREATE TABLE IF NOT EXISTS gateway_events(
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id INTEGER PRIMARY KEY,
             event_type TEXT NOT NULL,
             tenant_safe_id TEXT,
             job_id TEXT,

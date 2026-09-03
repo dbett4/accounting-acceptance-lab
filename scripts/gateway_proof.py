@@ -89,12 +89,12 @@ def main() -> None:
                 "redaction_probe", tenant_id="tenant-a", job_id=http_job_id, trace_id="9" * 32,
                 span_id="8" * 16, request_id="redaction-proof", state_transition=None,
                 duration_ms=None, error_class=None,
-                extra={"authorization": "proof-header-secret", "nested": {"token": "proof-nested-secret"}},
+                extra={"authorization": "proof-header-secret", "nested": {"token": "proof-nested-secret", "client_secret": "proof-client-secret", "access-token": "proof-access-secret"}},
             )
             event_text = json.dumps(server.gateway_store.events(), sort_keys=True)
             controls["structured_event_redaction"] = all(
-                secret not in event_text for secret in [*http_tokens, "proof-header-secret", "proof-nested-secret"]
-            ) and event_text.count("[REDACTED]") >= 2
+                secret not in event_text for secret in [*http_tokens, "proof-header-secret", "proof-nested-secret", "proof-client-secret", "proof-access-secret"]
+            ) and event_text.count("[REDACTED]") >= 4
         finally:
             server.shutdown()
             server.server_close()
@@ -114,27 +114,41 @@ def main() -> None:
         foreign_hidden = first.get_job("tenant-b", job["job_id"]) is None
         foreign_list, _ = first.list_jobs("tenant-b", 100, None)
         controls["tenant_read_list_idempotency_isolated"] = conflict and foreign_hidden and len(foreign_list) == 1 and foreign["job_id"] != job["job_id"]
+        # Drain the two isolation fixtures so later queue scenarios are independent.
+        first_worker = GatewayWorker(first, root / "artifacts")
+        first_worker.process_one("setup-worker")
+        first_worker.process_one("setup-worker")
 
-        second = GatewayStore(path)
+        race_path = root / "claim-race.db"
+        race_first = GatewayStore(race_path)
+        race_second = GatewayStore(race_path)
+        race_job = race_first.submit("race-tenant", "single-job", {"case_id": "C01"}, "6" * 32, "request-race")[0]
         barrier = threading.Barrier(2)
         outcomes: list[object] = []
         def run_worker(store: GatewayStore, identity: str) -> None:
             barrier.wait()
-            outcomes.append(GatewayWorker(store, root / "artifacts").process_one(identity))
-        threads = [threading.Thread(target=run_worker, args=(first, "worker-a")),
-                   threading.Thread(target=run_worker, args=(second, "worker-b"))]
+            outcomes.append(GatewayWorker(store, root / "race-artifacts").process_one(identity))
+        threads = [threading.Thread(target=run_worker, args=(race_first, "worker-a")),
+                   threading.Thread(target=run_worker, args=(race_second, "worker-b"))]
         for thread in threads: thread.start()
         for thread in threads: thread.join()
-        controls["concurrent_workers_single_execution"] = sum(value is not None for value in outcomes) == 2 and sum(
-            isinstance(value, dict) and value.get("job_id") == job["job_id"] for value in outcomes
-        ) == 1
+        race_final = race_first.get_job("race-tenant", race_job["job_id"])
+        controls["concurrent_workers_single_execution"] = (
+            sum(value is not None for value in outcomes) == 1
+            and sum(isinstance(value, dict) and value.get("job_id") == race_job["job_id"] for value in outcomes) == 1
+            and race_final["state"] == "succeeded" and race_final["attempts"] == 1
+        )
+        race_first.close()
+        race_second.close()
 
         lease_job = first.submit("tenant-a", "expired", {"case_id": "C02"}, "e" * 32, "request-e")[0]
         abandoned = first.claim("abandoned", 1, now=100)
         before_expiry = first.claim("early", 1, now=100.5)
+        stale_completed = first.complete(abandoned["job_id"], abandoned["claim_token"], "succeeded", "C02", None, now=101.05)
         recovered = first.claim("recovery", 1, now=101.1)
         controls["expired_claim_recovered"] = abandoned and abandoned["job_id"] == lease_job["job_id"] and before_expiry is None and recovered and recovered["attempts"] == 2
-        first.complete(recovered["job_id"], recovered["claim_token"], "failed", None, None, "synthetic_abandoned_claim")
+        recovered_completed = first.complete(recovered["job_id"], recovered["claim_token"], "failed", None, None, "synthetic_abandoned_claim", now=101.2)
+        controls["expired_claim_recovered"] = bool(controls["expired_claim_recovered"] and not stale_completed and recovered_completed)
 
         renewal_path = root / "renewal.db"
         renewal_first = GatewayStore(renewal_path)
@@ -206,16 +220,12 @@ def main() -> None:
 
         unknown = first.submit("tenant-a", "unknown-effect", {"case_id": "C12"}, "f" * 32, "request-f")[0]
         result = GatewayWorker(first, root / "artifacts").process_one("effect-worker")
-        # Select tenant-a's isolated database by its already-processed C01 fixture.
-        effect_count = 0
-        for candidate in (root / "gateway-tenants").glob("*.db"):
-            db = sqlite3.connect(candidate)
-            try:
-                if db.execute("SELECT COUNT(*) FROM cases WHERE case_id='C01'").fetchone()[0]:
-                    effect_count = db.execute("SELECT COUNT(*) FROM effects WHERE case_id='C12'").fetchone()[0]
-                    break
-            finally:
-                db.close()
+        tenant_db = root / "gateway-tenants" / f"{gateway_module._tenant_safe('tenant-a')}.db"
+        db = sqlite3.connect(tenant_db)
+        try:
+            effect_count = db.execute("SELECT COUNT(*) FROM effects WHERE case_id='C12'").fetchone()[0]
+        finally:
+            db.close()
         controls["unknown_effect_read_before_retry"] = result and result["job_id"] == unknown["job_id"] and result["state"] == "succeeded" and effect_count == 1
 
         timeout = first.submit("tenant-a", "timeout", {"case_id": "C03", "inject_fault": "proposal_timeout"}, "1" * 32, "request-t")[0]
@@ -225,14 +235,18 @@ def main() -> None:
         timeout_worker.process_one("timeout-worker")
         timeout_readback = first.get_job("tenant-a", timeout["job_id"])
         controls["proposal_timeout_bounded_retry"] = timeout_readback["state"] == "failed" and timeout_readback["attempts"] == 2 and timeout_readback["error_class"] == "proposal_timeout"
+        queued_restart = first.submit("tenant-a", "queued-restart", {"case_id": "C04"}, "2" * 32, "request-q")[0]
 
         first.close()
         reopened = GatewayStore(path)
-        controls["restart_persistence"] = reopened.get_job("tenant-a", job["job_id"])["state"] == "succeeded" and reopened.get_job("tenant-a", timeout["job_id"])["state"] == "failed"
+        controls["restart_persistence"] = (
+            reopened.get_job("tenant-a", job["job_id"])["state"] == "succeeded"
+            and reopened.get_job("tenant-a", timeout["job_id"])["state"] == "failed"
+            and reopened.get_job("tenant-a", queued_restart["job_id"])["state"] == "queued"
+        )
         summary = reopened.operational_summary()
         reopened.close()
         controls["database_interruption_readiness_failure"] = not reopened.health_probe()
-        second.close()
 
         control_db = root / "control.db"
         lab_store = Store(control_db)
@@ -250,13 +264,15 @@ def main() -> None:
         migration.execute("CREATE TABLE cases(case_id TEXT PRIMARY KEY)")
         migration.execute("INSERT INTO cases VALUES('preserved')")
         migration.commit()
+        before_schema = migration.execute("SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name").fetchall()
         upgrade_gateway(migration)
         upgraded = migration.execute("SELECT version FROM gateway_schema_version").fetchone()[0] == 1
         rollback_gateway(migration)
         tables = {row[0] for row in migration.execute("SELECT name FROM sqlite_master WHERE type='table'")}
         preserved = migration.execute("SELECT case_id FROM cases").fetchone()[0] == "preserved"
+        after_schema = migration.execute("SELECT type,name,tbl_name,sql FROM sqlite_master ORDER BY type,name").fetchall()
         migration.close()
-        controls["schema_upgrade_rollback_native_readback"] = upgraded and "gateway_jobs" not in tables and preserved
+        controls["schema_upgrade_rollback_native_readback"] = upgraded and "gateway_jobs" not in tables and preserved and after_schema == before_schema
 
         load = run_local_load(root / "load", requests=100, concurrency=8)
         (runtime_dir / "gateway_load_runtime.json").write_text(json.dumps(load, indent=2, sort_keys=True) + "\n", encoding="utf-8")

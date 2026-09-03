@@ -25,7 +25,7 @@ REQUEST_ID = re.compile(r"^[A-Za-z0-9._:-]{1,64}$")
 IDEMPOTENCY_KEY = re.compile(r"^[A-Za-z0-9._:-]{1,128}$")
 ALLOWED_REQUEST_FIELDS = {"case_id", "inject_fault"}
 ALLOWED_FAULTS = {"proposal_timeout"}
-SENSITIVE_KEYS = {"api_key", "token", "secret", "password", "authorization", "cookie"}
+SENSITIVE_KEYS = {"api_key", "token", "secret", "password", "authorization", "cookie", "credential"}
 
 
 def _canonical(value: Any) -> str:
@@ -40,9 +40,15 @@ def _tenant_safe(tenant_id: str) -> str:
     return _digest("tenant:" + tenant_id)[:16]
 
 
+def _is_sensitive_key(key: str) -> bool:
+    normalized = re.sub(r"[^a-z0-9]+", "_", key.lower()).strip("_")
+    parts = set(normalized.split("_"))
+    return normalized in SENSITIVE_KEYS or bool(parts & SENSITIVE_KEYS)
+
+
 def _deep_redact(value: Any) -> Any:
     if isinstance(value, dict):
-        return {str(key): ("[REDACTED]" if str(key).lower() in SENSITIVE_KEYS else _deep_redact(item))
+        return {str(key): ("[REDACTED]" if _is_sensitive_key(str(key)) else _deep_redact(item))
                 for key, item in value.items()}
     if isinstance(value, list):
         return [_deep_redact(item) for item in value]
@@ -253,8 +259,8 @@ class GatewayStore:
             updated = self.db.execute(
                 "UPDATE gateway_jobs SET state=?,acceptance_id=?,effect_id=?,error_class=?,retry_at=?,"
                 "claim_owner=NULL,claim_token=NULL,lease_expires_at=NULL,updated_at=? "
-                "WHERE job_id=? AND state='running' AND claim_token=?",
-                (state, acceptance_id, effect_id, error_class, retry_at, timestamp, job_id, claim_token),
+                "WHERE job_id=? AND state='running' AND claim_token=? AND lease_expires_at>?",
+                (state, acceptance_id, effect_id, error_class, retry_at, timestamp, job_id, claim_token, timestamp),
             )
         return updated.rowcount == 1
 
@@ -612,6 +618,23 @@ def make_gateway_server(host: str, port: int, db_path: str | Path, artifact_dir:
                 self._json(200, {"job": _public_job(job), "request_id": self._request_id})
                 self._record(tenant, started, 200, job["job_id"]); return
             self._error(404, "not_found", "resource not found"); self._record(tenant, started, 404)
+
+        def _unsupported_method(self) -> None:
+            path = urlparse(self.path).path
+            if path.startswith("/v1/"):
+                tenant, started = self._begin()
+                if not tenant:
+                    return
+                self._error(405, "method_not_allowed", "method is not allowed for this resource")
+                self._record(tenant, started, 405, error_class="method_not_allowed")
+                return
+            self._request_id, self._trace_id, self._span_id = "unavailable", _new_trace_id(), _new_span_id()
+            self._error(404, "not_found", "resource not found")
+
+        do_PUT = _unsupported_method
+        do_PATCH = _unsupported_method
+        do_DELETE = _unsupported_method
+        do_OPTIONS = _unsupported_method
 
         def log_message(self, *_: Any) -> None:
             return

@@ -41,6 +41,7 @@
     },
     "job_states": {
       "failed": 2,
+      "queued": 1,
       "succeeded": 3
     },
     "schema_version": 1,

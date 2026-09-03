@@ -10,7 +10,7 @@ The repository gate runs the original Accounting Acceptance Lab suite and demo/b
 
 ## Acceptance evidence
 
-- 50 unit and integration tests, including all 32 pre-gateway tests.
+- 52 unit and integration tests, including all 32 pre-gateway tests.
 - Tenant identity is derived from bearer-token bindings supplied at runtime; callers cannot select a tenant in request JSON.
 - Job submission is idempotent per tenant and request payload. Cross-tenant reads and lists are scoped by the authenticated tenant.
 - SQLite `BEGIN IMMEDIATE` claims prevent simultaneous ownership. Expired claims are recoverable, claim attempts are bounded, and claim tokens fence completion.
