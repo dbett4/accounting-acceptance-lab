@@ -1,5 +1,7 @@
 # Accounting Acceptance Lab
 
+[![CI](https://github.com/dbett4/accounting-acceptance-lab/actions/workflows/ci.yml/badge.svg)](https://github.com/dbett4/accounting-acceptance-lab/actions/workflows/ci.yml)
+
 A credential-free, synthetic reconciliation lab for testing whether an accounting agent can produce evidence-linked proposals without silently widening authority or duplicating ledger effects.
 
 ## One-command offline demo
