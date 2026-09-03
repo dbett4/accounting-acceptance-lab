@@ -37,12 +37,13 @@ The gateway extends the synthetic lab with an authenticated, tenant-scoped async
 
 ```bash
 export PYTHONPATH=src
+export AAL_GATEWAY_DEMO_TOKEN='local-demo-token'
 export AAL_GATEWAY_TOKEN_BINDINGS='{"local-demo-token":"tenant-demo"}'
 python3 -m aal.gateway_cli --state-dir .state serve
 
 # In another terminal, submit and process one synthetic job.
 curl -sS -X POST http://127.0.0.1:8090/v1/jobs \
-  -H 'Authorization: Bearer local-demo-token' \
+  -H "Authorization: Bearer ${AAL_GATEWAY_DEMO_TOKEN}" \
   -H 'Content-Type: application/json' \
   -H 'Idempotency-Key: demo-c01' \
   --data '{"case_id":"C01"}'

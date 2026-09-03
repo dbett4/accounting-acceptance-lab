@@ -99,7 +99,15 @@ def main() -> None:
             method_results = []
             for (method, path), token in zip(((method, path) for method in method_names for path in method_paths), method_tokens):
                 method_results.append((http_request(method, path)[0], http_request(method, path, token)[0]))
-            controls["all_v1_methods_authenticated"] = all(result == (401, 405) for result in method_results)
+            invalid_unauthenticated_context = (
+                http_request("GET", "/v1/jobs", headers={"traceparent": "not-valid"}),
+                http_request("FROB", "/v1/nope", headers={"X-Request-ID": "not valid"}),
+            )
+            controls["all_v1_methods_authenticated"] = (
+                all(result == (401, 405) for result in method_results)
+                and all(result[0] == 401 and result[1]["error"]["code"] == "unauthorized"
+                        for result in invalid_unauthenticated_context)
+            )
 
             request_secret = http_request(
                 "POST", "/v1/jobs", request_secret_token, {"case_id": "C01"},
@@ -113,12 +121,12 @@ def main() -> None:
                 "redaction_probe", tenant_id="tenant-a", job_id=http_job_id, trace_id="9" * 32,
                 span_id="8" * 16, request_id="redaction-proof", state_transition=None,
                 duration_ms=None, error_class=None,
-                extra={"authorization": "proof-header-secret", "nested": {"token": "proof-nested-secret", "client_secret": "proof-client-secret", "access-token": "proof-access-secret", "clientSecret": "proof-camel-client-secret", "accessToken": "proof-camel-access-secret", "apiKey": "proof-camel-api-secret", "passwordHash": "proof-camel-password-secret", "clientsecret": "proof-compact-client-secret", "accesstoken": "proof-compact-access-secret", "apikey": "proof-compact-api-secret", "passwordhash": "proof-compact-password-secret"}},
+                extra={"authorization": "proof-header-secret", "nested": {"token": "proof-nested-secret", "client_secret": "proof-client-secret", "access-token": "proof-access-secret", "clientSecret": "proof-camel-client-secret", "accessToken": "proof-camel-access-secret", "apiKey": "proof-camel-api-secret", "passwordHash": "proof-camel-password-secret", "clientsecret": "proof-compact-client-secret", "accesstoken": "proof-compact-access-secret", "apikey": "proof-compact-api-secret", "passwordhash": "proof-compact-password-secret", "authorizationheader": "proof-compact-authorization-secret", "tokenvalue": "proof-compact-token-secret", "secretvalue": "proof-compact-secret-secret", "passwordvalue": "proof-compact-value-secret", "cookievalue": "proof-compact-cookie-secret", "credentialvalue": "proof-compact-credential-secret"}},
             )
             event_text = json.dumps(server.gateway_store.events(), sort_keys=True)
             controls["structured_event_redaction"] = all(
-                secret not in event_text for secret in [*http_tokens, "proof-header-secret", "proof-nested-secret", "proof-client-secret", "proof-access-secret", "proof-camel-client-secret", "proof-camel-access-secret", "proof-camel-api-secret", "proof-camel-password-secret", "proof-compact-client-secret", "proof-compact-access-secret", "proof-compact-api-secret", "proof-compact-password-secret"]
-            ) and event_text.count("[REDACTED]") >= 12
+                secret not in event_text for secret in [*http_tokens, "proof-header-secret", "proof-nested-secret", "proof-client-secret", "proof-access-secret", "proof-camel-client-secret", "proof-camel-access-secret", "proof-camel-api-secret", "proof-camel-password-secret", "proof-compact-client-secret", "proof-compact-access-secret", "proof-compact-api-secret", "proof-compact-password-secret", "proof-compact-authorization-secret", "proof-compact-token-secret", "proof-compact-secret-secret", "proof-compact-value-secret", "proof-compact-cookie-secret", "proof-compact-credential-secret"]
+            ) and event_text.count("[REDACTED]") >= 18
         finally:
             server.shutdown()
             server.server_close()

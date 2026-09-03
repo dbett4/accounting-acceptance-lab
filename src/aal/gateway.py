@@ -30,6 +30,7 @@ SENSITIVE_COMPACT_KEYS = {
     "apikey", "accesstoken", "clientsecret", "passwordhash", "refreshtoken",
     "privatekey", "signingkey", "sessiontoken", "authtoken", "bearertoken", "clientcredential",
 }
+SENSITIVE_COMPACT_MARKERS = {key.replace("_", "") for key in SENSITIVE_KEYS}
 
 
 def _canonical(value: Any) -> str:
@@ -49,7 +50,9 @@ def _is_sensitive_key(key: str) -> bool:
     normalized = re.sub(r"[^a-z0-9]+", "_", separated.lower()).strip("_")
     parts = set(normalized.split("_"))
     compact = normalized.replace("_", "")
-    return normalized in SENSITIVE_KEYS or compact in SENSITIVE_COMPACT_KEYS or bool(parts & SENSITIVE_KEYS)
+    return (normalized in SENSITIVE_KEYS or compact in SENSITIVE_COMPACT_KEYS
+            or bool(parts & SENSITIVE_KEYS)
+            or any(marker in compact for marker in SENSITIVE_COMPACT_MARKERS))
 
 
 def _deep_redact(value: Any) -> Any:
@@ -560,9 +563,12 @@ def make_gateway_server(host: str, port: int, db_path: str | Path, artifact_dir:
 
         def _begin(self) -> tuple[str | None, float]:
             started = time.perf_counter()
+            tenant = self._authenticate()
+            if tenant is None:
+                return None, started
             if self._context() is None:
                 return None, started
-            return self._authenticate(), started
+            return tenant, started
 
         def _record(self, tenant: str | None, started: float, status: int, job_id: str | None = None,
                     transition: str | None = None, error_class: str | None = None) -> None:

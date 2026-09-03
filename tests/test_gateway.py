@@ -182,7 +182,7 @@ class GatewayStoreTest(unittest.TestCase):
         job = self.store.submit("tenant-a", "secretish", {"case_id": "C01"}, "0123456789abcdef0123456789abcdef", "request-1") [0]
         self.store.record_event("request", tenant_id="tenant-a", job_id=job["job_id"], trace_id="0" * 32,
                                 span_id="1" * 16, request_id="request-1", state_transition="queued",
-                                duration_ms=1.2, error_class=None, extra={"authorization": "hidden", "nested": {"token": "also-hidden", "client_secret": "client-hidden", "access-token": "access-hidden", "clientSecret": "camel-client-hidden", "accessToken": "camel-access-hidden", "apiKey": "camel-api-hidden", "passwordHash": "camel-password-hidden", "clientsecret": "compact-client-hidden", "accesstoken": "compact-access-hidden", "apikey": "compact-api-hidden", "passwordhash": "compact-password-hidden"}})
+                                duration_ms=1.2, error_class=None, extra={"authorization": "hidden", "nested": {"token": "also-hidden", "client_secret": "client-hidden", "access-token": "access-hidden", "clientSecret": "camel-client-hidden", "accessToken": "camel-access-hidden", "apiKey": "camel-api-hidden", "passwordHash": "camel-password-hidden", "clientsecret": "compact-client-hidden", "accesstoken": "compact-access-hidden", "apikey": "compact-api-hidden", "passwordhash": "compact-password-hidden", "authorizationheader": "compact-authorization-hidden", "tokenvalue": "compact-token-hidden", "secretvalue": "compact-secret-hidden", "passwordvalue": "compact-value-hidden", "cookievalue": "compact-cookie-hidden", "credentialvalue": "compact-credential-hidden"}})
         encoded = json.dumps(self.store.events())
         self.assertNotIn("hidden", encoded)
         event = self.store.events()[-1]
@@ -251,6 +251,12 @@ class GatewayHttpTest(unittest.TestCase):
         self.assertEqual(oversized[0], 413)
         invalid_trace = self.request("GET", "/v1/jobs", "alpha", headers={"traceparent": "not-valid"})
         self.assertEqual(invalid_trace[1]["error"]["code"], "invalid_traceparent")
+        unauthenticated_invalid_trace = self.request("GET", "/v1/jobs", headers={"traceparent": "not-valid"})
+        self.assertEqual((unauthenticated_invalid_trace[0], unauthenticated_invalid_trace[1]["error"]["code"]),
+                         (401, "unauthorized"))
+        unauthenticated_invalid_request_id = self.request("FROB", "/v1/nope", headers={"X-Request-ID": "not valid"})
+        self.assertEqual((unauthenticated_invalid_request_id[0], unauthenticated_invalid_request_id[1]["error"]["code"]),
+                         (401, "unauthorized"))
         limited = make_gateway_server("127.0.0.1", 0, Path(self.tmp.name) / "limited.db", Path(self.tmp.name) / "limited", {"alpha": "tenant-a"}, rate_limit=1)
         thread = threading.Thread(target=limited.serve_forever, daemon=True); thread.start()
         host, port = limited.server_address
