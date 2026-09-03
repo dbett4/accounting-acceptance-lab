@@ -1,0 +1,13 @@
+[
+  {"doc_id":"p-timing","source":"policy","version":"v2","effective_date":"2026-01-01","title":"Timing differences","text":"Outstanding bank timing differences may be recorded below 1000 USD after source confirmation.","metadata":{"kind":"policy"}},
+  {"doc_id":"p-duplicate","source":"policy","version":"v2","effective_date":"2026-01-01","title":"Duplicate payments","text":"A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.","metadata":{"kind":"policy"}},
+  {"doc_id":"p-duplicate-c1","source":"policy","version":"v2","effective_date":"2026-01-01","title":"Duplicate payment detail","text":"duplicate invoice paid twice reversal evidence","metadata":{"kind":"policy"},"parent_id":"p-duplicate"},
+  {"doc_id":"p-support","source":"policy","version":"v2","effective_date":"2026-01-01","title":"Source support","text":"Missing or conflicting source evidence requires abstention and review. Unsupported accruals must not be posted.","metadata":{"kind":"policy"}},
+  {"doc_id":"p-vendor","source":"policy","version":"v2","effective_date":"2026-01-01","title":"Vendor identity","text":"Ambiguous vendor identity requires independent vendor confirmation.","metadata":{"kind":"policy"}},
+  {"doc_id":"p-prior","source":"policy","version":"v2","effective_date":"2026-01-01","title":"Prior period corrections","text":"Prior period accounting errors require controller review and may not be automatically posted.","metadata":{"kind":"policy"}},
+  {"doc_id":"p-version","source":"policy","version":"v3","effective_date":"2026-06-01","title":"Policy version transitions","text":"A changed policy version requires effective-date validation before action.","metadata":{"kind":"policy"}},
+  {"doc_id":"p-material","source":"policy","version":"v2","effective_date":"2026-01-01","title":"Materiality threshold","text":"Items above 1000 USD are material and require controller approval.","metadata":{"kind":"policy"}},
+  {"doc_id":"p-fraud","source":"policy","version":"v2","effective_date":"2026-01-01","title":"Suspicious transactions","text":"Suspicious unresolved payments require fraud escalation and no ledger action.","metadata":{"kind":"policy"}},
+  {"doc_id":"vendor-1","source":"vendor","version":"2026-01","effective_date":"2026-01-15","title":"Vendor master Northwind","text":"Northwind Office vendor identifier V-100.","metadata":{"kind":"vendor"}},
+  {"doc_id":"support-1","source":"support","version":"1","effective_date":"2026-01-02","title":"Invoice INV-001","text":"Invoice INV-001 amount 125 USD from Northwind Office.","metadata":{"kind":"invoice"}}
+]

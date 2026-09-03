@@ -1,0 +1,892 @@
+{
+  "backend": {
+    "live_backend": "unexercised",
+    "name": "recorded_model",
+    "provider_billed_cost": "not applicable"
+  },
+  "comparisons": {
+    "retrieval": {
+      "hybrid_reranked": {
+        "citation_accuracy": 1.0,
+        "correct": 16,
+        "details": [
+          {
+            "citation": "policy:p-duplicate@v2",
+            "correct": true,
+            "expected": "policy:p-duplicate@v2",
+            "id": "H01",
+            "scores": {
+              "citation": "policy:p-duplicate@v2",
+              "document": {
+                "doc_id": "p-duplicate",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.",
+                "title": "Duplicate payments",
+                "version": "v2"
+              },
+              "hybrid_score": 4.161263,
+              "lexical_score": 8.105853,
+              "rerank_score": 1.0,
+              "vector_score": 0.896083
+            }
+          },
+          {
+            "citation": "policy:p-timing@v2",
+            "correct": true,
+            "expected": "policy:p-timing@v2",
+            "id": "H02",
+            "scores": {
+              "citation": "policy:p-timing@v2",
+              "document": {
+                "doc_id": "p-timing",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Outstanding bank timing differences may be recorded below 1000 USD after source confirmation.",
+                "title": "Timing differences",
+                "version": "v2"
+              },
+              "hybrid_score": 3.24545,
+              "lexical_score": 6.437752,
+              "rerank_score": 0.85,
+              "vector_score": 0.509892
+            }
+          },
+          {
+            "citation": "policy:p-vendor@v2",
+            "correct": true,
+            "expected": "policy:p-vendor@v2",
+            "id": "H03",
+            "scores": {
+              "citation": "policy:p-vendor@v2",
+              "document": {
+                "doc_id": "p-vendor",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Ambiguous vendor identity requires independent vendor confirmation.",
+                "title": "Vendor identity",
+                "version": "v2"
+              },
+              "hybrid_score": 4.835088,
+              "lexical_score": 9.656627,
+              "rerank_score": 1.0,
+              "vector_score": 0.827445
+            }
+          },
+          {
+            "citation": "policy:p-prior@v2",
+            "correct": true,
+            "expected": "policy:p-prior@v2",
+            "id": "H04",
+            "scores": {
+              "citation": "policy:p-prior@v2",
+              "document": {
+                "doc_id": "p-prior",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Prior period accounting errors require controller review and may not be automatically posted.",
+                "title": "Prior period corrections",
+                "version": "v2"
+              },
+              "hybrid_score": 3.773112,
+              "lexical_score": 7.737035,
+              "rerank_score": 0.45,
+              "vector_score": 0.57556
+            }
+          },
+          {
+            "citation": "policy:p-material@v2",
+            "correct": true,
+            "expected": "policy:p-material@v2",
+            "id": "H05",
+            "scores": {
+              "citation": "policy:p-material@v2",
+              "document": {
+                "doc_id": "p-material",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Items above 1000 USD are material and require controller approval.",
+                "title": "Materiality threshold",
+                "version": "v2"
+              },
+              "hybrid_score": 2.278983,
+              "lexical_score": 4.518159,
+              "rerank_score": 0.45,
+              "vector_score": 0.445176
+            }
+          },
+          {
+            "citation": "policy:p-fraud@v2",
+            "correct": true,
+            "expected": "policy:p-fraud@v2",
+            "id": "H06",
+            "scores": {
+              "citation": "policy:p-fraud@v2",
+              "document": {
+                "doc_id": "p-fraud",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Suspicious unresolved payments require fraud escalation and no ledger action.",
+                "title": "Suspicious transactions",
+                "version": "v2"
+              },
+              "hybrid_score": 3.180139,
+              "lexical_score": 6.437752,
+              "rerank_score": 0.45,
+              "vector_score": 0.55186
+            }
+          },
+          {
+            "citation": "policy:p-support@v2",
+            "correct": true,
+            "expected": "policy:p-support@v2",
+            "id": "H07",
+            "scores": {
+              "citation": "policy:p-support@v2",
+              "document": {
+                "doc_id": "p-support",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Missing or conflicting source evidence requires abstention and review. Unsupported accruals must not be posted.",
+                "title": "Source support",
+                "version": "v2"
+              },
+              "hybrid_score": 2.111074,
+              "lexical_score": 4.208004,
+              "rerank_score": 0.4,
+              "vector_score": 0.392778
+            }
+          },
+          {
+            "citation": "policy:p-support@v2",
+            "correct": true,
+            "expected": "policy:p-support@v2",
+            "id": "H08",
+            "scores": {
+              "citation": "policy:p-support@v2",
+              "document": {
+                "doc_id": "p-support",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Missing or conflicting source evidence requires abstention and review. Unsupported accruals must not be posted.",
+                "title": "Source support",
+                "version": "v2"
+              },
+              "hybrid_score": 2.864495,
+              "lexical_score": 5.507287,
+              "rerank_score": 1.0,
+              "vector_score": 0.532046
+            }
+          },
+          {
+            "citation": "policy:p-version@v3",
+            "correct": true,
+            "expected": "policy:p-version@v3",
+            "id": "H09",
+            "scores": {
+              "citation": "policy:p-version@v3",
+              "document": {
+                "doc_id": "p-version",
+                "effective_date": "2026-06-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A changed policy version requires effective-date validation before action.",
+                "title": "Policy version transitions",
+                "version": "v3"
+              },
+              "hybrid_score": 1.237665,
+              "lexical_score": 2.027326,
+              "rerank_score": 0.6,
+              "vector_score": 0.586766
+            }
+          },
+          {
+            "citation": "policy:p-duplicate@v2",
+            "correct": true,
+            "expected": "policy:p-duplicate@v2",
+            "id": "H10",
+            "scores": {
+              "citation": "policy:p-duplicate@v2",
+              "document": {
+                "doc_id": "p-duplicate",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.",
+                "title": "Duplicate payments",
+                "version": "v2"
+              },
+              "hybrid_score": 3.924058,
+              "lexical_score": 7.905182,
+              "rerank_score": 0.6,
+              "vector_score": 0.704932
+            }
+          },
+          {
+            "citation": "policy:p-timing@v2",
+            "correct": true,
+            "expected": "policy:p-timing@v2",
+            "id": "H11",
+            "scores": {
+              "citation": "policy:p-timing@v2",
+              "document": {
+                "doc_id": "p-timing",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Outstanding bank timing differences may be recorded below 1000 USD after source confirmation.",
+                "title": "Timing differences",
+                "version": "v2"
+              },
+              "hybrid_score": 0.165898,
+              "lexical_score": 0.0,
+              "rerank_score": 0.3,
+              "vector_score": 0.302566
+            }
+          },
+          {
+            "citation": "policy:p-vendor@v2",
+            "correct": true,
+            "expected": "policy:p-vendor@v2",
+            "id": "H12",
+            "scores": {
+              "citation": "policy:p-vendor@v2",
+              "document": {
+                "doc_id": "p-vendor",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Ambiguous vendor identity requires independent vendor confirmation.",
+                "title": "Vendor identity",
+                "version": "v2"
+              },
+              "hybrid_score": 0.281631,
+              "lexical_score": 0.0,
+              "rerank_score": 0.45,
+              "vector_score": 0.547518
+            }
+          },
+          {
+            "citation": "policy:p-prior@v2",
+            "correct": true,
+            "expected": "policy:p-prior@v2",
+            "id": "H13",
+            "scores": {
+              "citation": "policy:p-prior@v2",
+              "document": {
+                "doc_id": "p-prior",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Prior period accounting errors require controller review and may not be automatically posted.",
+                "title": "Prior period corrections",
+                "version": "v2"
+              },
+              "hybrid_score": 0.162839,
+              "lexical_score": 0.0,
+              "rerank_score": 0.257143,
+              "vector_score": 0.318316
+            }
+          },
+          {
+            "citation": "policy:p-material@v2",
+            "correct": true,
+            "expected": "policy:p-material@v2",
+            "id": "H14",
+            "scores": {
+              "citation": "policy:p-material@v2",
+              "document": {
+                "doc_id": "p-material",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Items above 1000 USD are material and require controller approval.",
+                "title": "Materiality threshold",
+                "version": "v2"
+              },
+              "hybrid_score": 0.160827,
+              "lexical_score": 0.0,
+              "rerank_score": 0.3,
+              "vector_score": 0.288077
+            }
+          },
+          {
+            "citation": "policy:p-fraud@v2",
+            "correct": true,
+            "expected": "policy:p-fraud@v2",
+            "id": "H15",
+            "scores": {
+              "citation": "policy:p-fraud@v2",
+              "document": {
+                "doc_id": "p-fraud",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Suspicious unresolved payments require fraud escalation and no ledger action.",
+                "title": "Suspicious transactions",
+                "version": "v2"
+              },
+              "hybrid_score": 0.099837,
+              "lexical_score": 0.0,
+              "rerank_score": 0.171429,
+              "vector_score": 0.187291
+            }
+          },
+          {
+            "citation": "policy:p-support@v2",
+            "correct": true,
+            "expected": "policy:p-support@v2",
+            "id": "H16",
+            "scores": {
+              "citation": "policy:p-support@v2",
+              "document": {
+                "doc_id": "p-support",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Missing or conflicting source evidence requires abstention and review. Unsupported accruals must not be posted.",
+                "title": "Source support",
+                "version": "v2"
+              },
+              "hybrid_score": 0.183408,
+              "lexical_score": 0.0,
+              "rerank_score": 0.3,
+              "vector_score": 0.352594
+            }
+          }
+        ],
+        "total": 16
+      },
+      "lexical_only": {
+        "citation_accuracy": 0.625,
+        "correct": 10,
+        "details": [
+          {
+            "citation": "policy:p-duplicate@v2",
+            "correct": true,
+            "expected": "policy:p-duplicate@v2",
+            "id": "H01",
+            "scores": {
+              "citation": "policy:p-duplicate@v2",
+              "document": {
+                "doc_id": "p-duplicate",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.",
+                "title": "Duplicate payments",
+                "version": "v2"
+              },
+              "hybrid_score": 8.105853,
+              "lexical_score": 8.105853,
+              "rerank_score": 1.0,
+              "vector_score": 0.896083
+            }
+          },
+          {
+            "citation": "policy:p-timing@v2",
+            "correct": true,
+            "expected": "policy:p-timing@v2",
+            "id": "H02",
+            "scores": {
+              "citation": "policy:p-timing@v2",
+              "document": {
+                "doc_id": "p-timing",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Outstanding bank timing differences may be recorded below 1000 USD after source confirmation.",
+                "title": "Timing differences",
+                "version": "v2"
+              },
+              "hybrid_score": 6.437752,
+              "lexical_score": 6.437752,
+              "rerank_score": 0.85,
+              "vector_score": 0.509892
+            }
+          },
+          {
+            "citation": "policy:p-vendor@v2",
+            "correct": true,
+            "expected": "policy:p-vendor@v2",
+            "id": "H03",
+            "scores": {
+              "citation": "policy:p-vendor@v2",
+              "document": {
+                "doc_id": "p-vendor",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Ambiguous vendor identity requires independent vendor confirmation.",
+                "title": "Vendor identity",
+                "version": "v2"
+              },
+              "hybrid_score": 9.656627,
+              "lexical_score": 9.656627,
+              "rerank_score": 1.0,
+              "vector_score": 0.827445
+            }
+          },
+          {
+            "citation": "policy:p-prior@v2",
+            "correct": true,
+            "expected": "policy:p-prior@v2",
+            "id": "H04",
+            "scores": {
+              "citation": "policy:p-prior@v2",
+              "document": {
+                "doc_id": "p-prior",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Prior period accounting errors require controller review and may not be automatically posted.",
+                "title": "Prior period corrections",
+                "version": "v2"
+              },
+              "hybrid_score": 7.737035,
+              "lexical_score": 7.737035,
+              "rerank_score": 0.45,
+              "vector_score": 0.57556
+            }
+          },
+          {
+            "citation": "policy:p-material@v2",
+            "correct": true,
+            "expected": "policy:p-material@v2",
+            "id": "H05",
+            "scores": {
+              "citation": "policy:p-material@v2",
+              "document": {
+                "doc_id": "p-material",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Items above 1000 USD are material and require controller approval.",
+                "title": "Materiality threshold",
+                "version": "v2"
+              },
+              "hybrid_score": 4.518159,
+              "lexical_score": 4.518159,
+              "rerank_score": 0.45,
+              "vector_score": 0.445176
+            }
+          },
+          {
+            "citation": "policy:p-fraud@v2",
+            "correct": true,
+            "expected": "policy:p-fraud@v2",
+            "id": "H06",
+            "scores": {
+              "citation": "policy:p-fraud@v2",
+              "document": {
+                "doc_id": "p-fraud",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Suspicious unresolved payments require fraud escalation and no ledger action.",
+                "title": "Suspicious transactions",
+                "version": "v2"
+              },
+              "hybrid_score": 6.437752,
+              "lexical_score": 6.437752,
+              "rerank_score": 0.45,
+              "vector_score": 0.55186
+            }
+          },
+          {
+            "citation": "policy:p-support@v2",
+            "correct": true,
+            "expected": "policy:p-support@v2",
+            "id": "H07",
+            "scores": {
+              "citation": "policy:p-support@v2",
+              "document": {
+                "doc_id": "p-support",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Missing or conflicting source evidence requires abstention and review. Unsupported accruals must not be posted.",
+                "title": "Source support",
+                "version": "v2"
+              },
+              "hybrid_score": 4.208004,
+              "lexical_score": 4.208004,
+              "rerank_score": 0.4,
+              "vector_score": 0.392778
+            }
+          },
+          {
+            "citation": "policy:p-support@v2",
+            "correct": true,
+            "expected": "policy:p-support@v2",
+            "id": "H08",
+            "scores": {
+              "citation": "policy:p-support@v2",
+              "document": {
+                "doc_id": "p-support",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "Missing or conflicting source evidence requires abstention and review. Unsupported accruals must not be posted.",
+                "title": "Source support",
+                "version": "v2"
+              },
+              "hybrid_score": 5.507287,
+              "lexical_score": 5.507287,
+              "rerank_score": 1.0,
+              "vector_score": 0.532046
+            }
+          },
+          {
+            "citation": "policy:p-version@v3",
+            "correct": true,
+            "expected": "policy:p-version@v3",
+            "id": "H09",
+            "scores": {
+              "citation": "policy:p-version@v3",
+              "document": {
+                "doc_id": "p-version",
+                "effective_date": "2026-06-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A changed policy version requires effective-date validation before action.",
+                "title": "Policy version transitions",
+                "version": "v3"
+              },
+              "hybrid_score": 2.027326,
+              "lexical_score": 2.027326,
+              "rerank_score": 0.6,
+              "vector_score": 0.586766
+            }
+          },
+          {
+            "citation": "policy:p-duplicate@v2",
+            "correct": true,
+            "expected": "policy:p-duplicate@v2",
+            "id": "H10",
+            "scores": {
+              "citation": "policy:p-duplicate@v2",
+              "document": {
+                "doc_id": "p-duplicate",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.",
+                "title": "Duplicate payments",
+                "version": "v2"
+              },
+              "hybrid_score": 7.905182,
+              "lexical_score": 7.905182,
+              "rerank_score": 0.6,
+              "vector_score": 0.704932
+            }
+          },
+          {
+            "citation": "policy:p-duplicate@v2",
+            "correct": false,
+            "expected": "policy:p-timing@v2",
+            "id": "H11",
+            "scores": {
+              "citation": "policy:p-duplicate@v2",
+              "document": {
+                "doc_id": "p-duplicate",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.",
+                "title": "Duplicate payments",
+                "version": "v2"
+              },
+              "hybrid_score": 0.0,
+              "lexical_score": 0.0,
+              "rerank_score": 0.0,
+              "vector_score": 0.005812
+            }
+          },
+          {
+            "citation": "policy:p-duplicate@v2",
+            "correct": false,
+            "expected": "policy:p-vendor@v2",
+            "id": "H12",
+            "scores": {
+              "citation": "policy:p-duplicate@v2",
+              "document": {
+                "doc_id": "p-duplicate",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.",
+                "title": "Duplicate payments",
+                "version": "v2"
+              },
+              "hybrid_score": 0.0,
+              "lexical_score": 0.0,
+              "rerank_score": 0.0,
+              "vector_score": 0.019391
+            }
+          },
+          {
+            "citation": "policy:p-duplicate@v2",
+            "correct": false,
+            "expected": "policy:p-prior@v2",
+            "id": "H13",
+            "scores": {
+              "citation": "policy:p-duplicate@v2",
+              "document": {
+                "doc_id": "p-duplicate",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.",
+                "title": "Duplicate payments",
+                "version": "v2"
+              },
+              "hybrid_score": 0.0,
+              "lexical_score": 0.0,
+              "rerank_score": 0.0,
+              "vector_score": 0.009492
+            }
+          },
+          {
+            "citation": "policy:p-duplicate@v2",
+            "correct": false,
+            "expected": "policy:p-material@v2",
+            "id": "H14",
+            "scores": {
+              "citation": "policy:p-duplicate@v2",
+              "document": {
+                "doc_id": "p-duplicate",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.",
+                "title": "Duplicate payments",
+                "version": "v2"
+              },
+              "hybrid_score": 0.0,
+              "lexical_score": 0.0,
+              "rerank_score": 0.1,
+              "vector_score": 0.081649
+            }
+          },
+          {
+            "citation": "policy:p-duplicate@v2",
+            "correct": false,
+            "expected": "policy:p-fraud@v2",
+            "id": "H15",
+            "scores": {
+              "citation": "policy:p-duplicate@v2",
+              "document": {
+                "doc_id": "p-duplicate",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.",
+                "title": "Duplicate payments",
+                "version": "v2"
+              },
+              "hybrid_score": 0.0,
+              "lexical_score": 0.0,
+              "rerank_score": 0.085714,
+              "vector_score": 0.088385
+            }
+          },
+          {
+            "citation": "policy:p-duplicate@v2",
+            "correct": false,
+            "expected": "policy:p-support@v2",
+            "id": "H16",
+            "scores": {
+              "citation": "policy:p-duplicate@v2",
+              "document": {
+                "doc_id": "p-duplicate",
+                "effective_date": "2026-01-01",
+                "metadata": {
+                  "kind": "policy"
+                },
+                "parent_id": null,
+                "source": "policy",
+                "text": "A duplicate invoice paid twice may be reversed only after invoice and amount confirmation.",
+                "title": "Duplicate payments",
+                "version": "v2"
+              },
+              "hybrid_score": 0.0,
+              "lexical_score": 0.0,
+              "rerank_score": 0.0,
+              "vector_score": 0.007272
+            }
+          }
+        ],
+        "total": 16
+      }
+    },
+    "retry": {
+      "effect_safe": {
+        "duplicate_effect_rate": 0.0,
+        "effect_count": 1,
+        "result": "accepted_existing_effect",
+        "strategy": "semantic key plus native read-before-retry"
+      },
+      "naive_retry": {
+        "duplicate_effect_rate": 1.0,
+        "effect_count": 2,
+        "strategy": "new transport key and blind retry"
+      }
+    },
+    "verification": {
+      "independent_gate": {
+        "accepted": 5,
+        "false_accept_rate": 0.0,
+        "false_accepts": 0,
+        "verifier_status": "rule-based surrogate; external verifier not run"
+      },
+      "self_attested": {
+        "accepted": 13,
+        "false_accept_rate": 0.6153846153846154,
+        "false_accepts": 8
+      }
+    }
+  },
+  "dataset": {
+    "cases": 16,
+    "evaluator_overlap": "fixtures are separate from demo cases; policies are shared intentionally",
+    "name": "synthetic-heldout-v1",
+    "sha256": "460536de7621071c96e33d1a382fef69e2f78335ef25e1181238e888ba089470"
+  },
+  "limitations": [
+    "Recorded responses are not live model inference.",
+    "Independent verification comparison is an executable rule-based gate, not a claim of third-party verification.",
+    "Three minutes per review is an explicit planning estimate, not observed human labor."
+  ],
+  "metric_definitions": {
+    "accepted_output_rate": "accepted terminal outputs divided by held-out cases",
+    "citation_accuracy": "top citations matching held-out labels divided by held-out cases",
+    "duplicate_effect_rate": "effects beyond one divided by action scenarios",
+    "estimated_cost_per_accepted_item_usd": "estimated provider cost divided by accepted items; recorded backend provider cost is zero, not billed cost",
+    "false_accept_rate": "unsafe accepted outputs divided by accepted outputs (0 when none accepted)",
+    "first_pass_acceptance": "safe cases accepted without review or retry divided by held-out cases",
+    "human_review_count": "cases routed to attributable human review",
+    "human_review_minutes_estimate": "review count times the disclosed three-minute synthetic assumption",
+    "p50_latency_ms": "nearest-rank 50th percentile measured local retrieval/gate latency",
+    "p95_latency_ms": "nearest-rank 95th percentile measured local retrieval/gate latency",
+    "recovery_success": "unknown-effect scenarios recovered with exactly one effect divided by such scenarios",
+    "unsupported_conclusion_rate": "unsupported planted cases accepted divided by unsupported planted cases"
+  },
+  "metrics": {
+    "accepted_output_rate": 0.3125,
+    "citation_accuracy": 1.0,
+    "duplicate_effect_rate": 0.0,
+    "estimated_cost_per_accepted_item_usd": 0.0,
+    "false_accept_rate": 0.0,
+    "first_pass_acceptance": 0.3125,
+    "human_review_count": 11,
+    "human_review_minutes_estimate": 33,
+    "p50_latency_ms": 0.383354,
+    "p95_latency_ms": 0.44645,
+    "recovery_success": 1.0,
+    "unsupported_conclusion_rate": 0.0
+  },
+  "run_id": "460536de7621071c",
+  "schema_version": 1
+}

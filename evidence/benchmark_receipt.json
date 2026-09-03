@@ -1,0 +1,11 @@
+{
+  "artifact": "benchmark.json",
+  "case_count": 16,
+  "gate": {
+    "single_effect_recovery": true,
+    "zero_false_accepts": true,
+    "zero_unsupported_accepts": true
+  },
+  "run_id": "460536de7621071c",
+  "sha256": "fedb0254edf023ddb7756e7e436ea5970f3dc863e227bc5f8f22b63bc77c08df"
+}

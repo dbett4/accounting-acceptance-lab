@@ -1,0 +1,14 @@
+[
+  {"case_id":"C01","case_type":"clean_match","amount":125.0,"query":"exact invoice bank match","evidence_status":"fresh","policy_version":"v2","gl":{"record_id":"g1","source":"gl","amount":"125.00","date":"2026-01-02","vendor":"Northwind Office","reference":"INV-001"},"bank":{"record_id":"b1","source":"bank","amount":"-125.00","date":"2026-01-02","vendor":"Northwind Office","reference":"INV-001"}},
+  {"case_id":"C02","case_type":"timing_difference","amount":80.0,"query":"bank timing difference outstanding payment","evidence_status":"fresh","policy_version":"v2"},
+  {"case_id":"C03","case_type":"duplicate","amount":100.0,"query":"duplicate invoice paid twice reversal","evidence_status":"fresh","policy_version":"v2"},
+  {"case_id":"C04","case_type":"missing_source","amount":44.0,"query":"missing invoice source support","evidence_status":"missing","policy_version":"v2"},
+  {"case_id":"C05","case_type":"conflicting_source","amount":90.0,"query":"conflicting invoice amount source","evidence_status":"conflicting","policy_version":"v2"},
+  {"case_id":"C06","case_type":"unsupported_accrual","amount":210.0,"query":"accrual without service support","evidence_status":"unsupported","policy_version":"v2"},
+  {"case_id":"C07","case_type":"ambiguous_vendor","amount":75.0,"query":"ambiguous vendor identity confirmation","evidence_status":"ambiguous","policy_version":"v2"},
+  {"case_id":"C08","case_type":"prior_period_error","amount":350.0,"query":"prior period accounting error correction","evidence_status":"fresh","policy_version":"v2"},
+  {"case_id":"C09","case_type":"policy_version_change","amount":60.0,"query":"policy version changed approval effective","evidence_status":"stale","policy_version":"v3"},
+  {"case_id":"C10","case_type":"materiality_threshold","amount":5000.0,"query":"materiality threshold escalation","evidence_status":"fresh","policy_version":"v2"},
+  {"case_id":"C11","case_type":"suspicious_unresolved_item","amount":999.0,"query":"suspicious payment fraud escalation","evidence_status":"fresh","policy_version":"v2"},
+  {"case_id":"C12","case_type":"retry_after_unknown_external_effect","amount":25.0,"query":"timing adjustment retry effect","evidence_status":"fresh","policy_version":"v2"}
+]

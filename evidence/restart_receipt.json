@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "phases": [
+    {
+      "health": "ok",
+      "persisted_case": "C01",
+      "phase": 1,
+      "state": "accepted"
+    },
+    {
+      "health": "ok",
+      "persisted_case": "C01",
+      "phase": 2,
+      "state": "accepted"
+    }
+  ],
+  "process_restarts": 1
+}

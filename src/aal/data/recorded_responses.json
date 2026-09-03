@@ -1,0 +1,12 @@
+{
+  "timing_difference":{"case_type":"timing_difference","recommendation":"record_timing_adjustment","rationale":"Policy supports a bounded timing adjustment after confirmation.","citations":["policy:p-timing@v2"],"risk":"low","material":false,"confidence":0.93},
+  "duplicate":{"case_type":"duplicate","recommendation":"reverse_duplicate","rationale":"Invoice and amount duplication meet the reversal policy.","citations":["policy:p-duplicate@v2"],"risk":"low","material":false,"confidence":0.98},
+  "missing_source":{"case_type":"missing_source","recommendation":"abstain","rationale":"Required source is absent.","citations":["policy:p-support@v2"],"risk":"high","material":false,"confidence":0.99,"abstain_reason":"missing evidence"},
+  "conflicting_source":{"case_type":"conflicting_source","recommendation":"abstain","rationale":"Sources conflict.","citations":["policy:p-support@v2"],"risk":"high","material":false,"confidence":0.99,"abstain_reason":"conflicting evidence"},
+  "unsupported_accrual":{"case_type":"unsupported_accrual","recommendation":"abstain","rationale":"No service support exists.","citations":["policy:p-support@v2"],"risk":"high","material":false,"confidence":0.99,"abstain_reason":"unsupported conclusion"},
+  "ambiguous_vendor":{"case_type":"ambiguous_vendor","recommendation":"abstain","rationale":"Vendor identity is ambiguous.","citations":["policy:p-vendor@v2"],"risk":"medium","material":false,"confidence":0.9,"abstain_reason":"ambiguous vendor"},
+  "prior_period_error":{"case_type":"prior_period_error","recommendation":"route_controller","rationale":"Prior-period correction needs controller judgment.","citations":["policy:p-prior@v2"],"risk":"high","material":false,"confidence":0.94},
+  "policy_version_change":{"case_type":"policy_version_change","recommendation":"abstain","rationale":"Effective policy version needs validation.","citations":["policy:p-version@v3"],"risk":"medium","material":false,"confidence":0.91,"abstain_reason":"stale policy lineage"},
+  "materiality_threshold":{"case_type":"materiality_threshold","recommendation":"route_controller","rationale":"Amount exceeds policy threshold.","citations":["policy:p-material@v2"],"risk":"high","material":true,"confidence":0.99},
+  "suspicious_unresolved_item":{"case_type":"suspicious_unresolved_item","recommendation":"route_fraud_review","rationale":"Suspicious payment indicators require escalation.","citations":["policy:p-fraud@v2"],"risk":"high","material":false,"confidence":0.97}
+}

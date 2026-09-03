@@ -1,0 +1,89 @@
+{
+  "build": "passed",
+  "case_after_restart": {
+    "amount": 125.0,
+    "approval": null,
+    "case_id": "C01",
+    "case_type": "clean_match",
+    "effects": [],
+    "generation": 1,
+    "payload": {
+      "amount": 125.0,
+      "bank": {
+        "amount": "-125.00",
+        "date": "2026-01-02",
+        "record_id": "b1",
+        "reference": "INV-001",
+        "source": "bank",
+        "vendor": "Northwind Office"
+      },
+      "case_id": "C01",
+      "case_type": "clean_match",
+      "citations": [],
+      "evidence_status": "fresh",
+      "gl": {
+        "amount": "125.00",
+        "date": "2026-01-02",
+        "record_id": "g1",
+        "reference": "INV-001",
+        "source": "gl",
+        "vendor": "Northwind Office"
+      },
+      "policy_version": "v2",
+      "proposal": null,
+      "query": "exact invoice bank match",
+      "readback": null,
+      "verdict": "accepted_deterministic_match"
+    },
+    "state": "accepted"
+  },
+  "case_before_restart": {
+    "amount": 125.0,
+    "approval": null,
+    "case_id": "C01",
+    "case_type": "clean_match",
+    "effects": [],
+    "generation": 1,
+    "payload": {
+      "amount": 125.0,
+      "bank": {
+        "amount": "-125.00",
+        "date": "2026-01-02",
+        "record_id": "b1",
+        "reference": "INV-001",
+        "source": "bank",
+        "vendor": "Northwind Office"
+      },
+      "case_id": "C01",
+      "case_type": "clean_match",
+      "citations": [],
+      "evidence_status": "fresh",
+      "gl": {
+        "amount": "125.00",
+        "date": "2026-01-02",
+        "record_id": "g1",
+        "reference": "INV-001",
+        "source": "gl",
+        "vendor": "Northwind Office"
+      },
+      "policy_version": "v2",
+      "proposal": null,
+      "query": "exact invoice bank match",
+      "readback": null,
+      "verdict": "accepted_deterministic_match"
+    },
+    "state": "accepted"
+  },
+  "container_health_status": "healthy",
+  "health_after_restart": {
+    "database": "reachable",
+    "service": "accounting-acceptance-lab",
+    "status": "ok"
+  },
+  "health_before_restart": {
+    "database": "reachable",
+    "service": "accounting-acceptance-lab",
+    "status": "ok"
+  },
+  "passed": true
+}
