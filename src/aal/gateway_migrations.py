@@ -17,7 +17,7 @@ def upgrade_gateway(db: sqlite3.Connection) -> None:
             seq INTEGER PRIMARY KEY,
             job_id TEXT NOT NULL UNIQUE,
             tenant_id TEXT NOT NULL,
-            idempotency_key TEXT NOT NULL,
+            idempotency_digest TEXT NOT NULL,
             request_digest TEXT NOT NULL,
             request_json TEXT NOT NULL,
             state TEXT NOT NULL CHECK(state IN ('queued','running','retry_wait','succeeded','failed')),
@@ -33,7 +33,7 @@ def upgrade_gateway(db: sqlite3.Connection) -> None:
             request_id TEXT NOT NULL,
             created_at REAL NOT NULL,
             updated_at REAL NOT NULL,
-            UNIQUE(tenant_id, idempotency_key)
+            UNIQUE(tenant_id, idempotency_digest)
         );
         CREATE INDEX IF NOT EXISTS gateway_jobs_claim
             ON gateway_jobs(state, retry_at, lease_expires_at, seq);

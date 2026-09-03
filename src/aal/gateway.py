@@ -146,13 +146,14 @@ class GatewayStore:
                request_id: str, now: float | None = None) -> tuple[dict[str, Any], bool]:
         encoded = _canonical(request)
         request_digest = _digest(encoded)
+        idempotency_digest = _digest("idempotency:" + idempotency_key)
         timestamp = time.time() if now is None else now
         with self._lock:
             self.db.execute("BEGIN IMMEDIATE")
             try:
                 existing = self.db.execute(
-                    "SELECT * FROM gateway_jobs WHERE tenant_id=? AND idempotency_key=?",
-                    (tenant_id, idempotency_key),
+                    "SELECT * FROM gateway_jobs WHERE tenant_id=? AND idempotency_digest=?",
+                    (tenant_id, idempotency_digest),
                 ).fetchone()
                 if existing:
                     if not hmac.compare_digest(existing["request_digest"], request_digest):
@@ -161,9 +162,9 @@ class GatewayStore:
                     return self._row(existing), False
                 job_id = "job_" + uuid.uuid4().hex
                 self.db.execute(
-                    "INSERT INTO gateway_jobs(job_id,tenant_id,idempotency_key,request_digest,request_json,state,trace_id,request_id,created_at,updated_at) "
+                    "INSERT INTO gateway_jobs(job_id,tenant_id,idempotency_digest,request_digest,request_json,state,trace_id,request_id,created_at,updated_at) "
                     "VALUES(?,?,?,?,?,'queued',?,?,?,?)",
-                    (job_id, tenant_id, idempotency_key, request_digest, encoded, trace_id, request_id, timestamp, timestamp),
+                    (job_id, tenant_id, idempotency_digest, request_digest, encoded, trace_id, request_id, timestamp, timestamp),
                 )
                 row = self.db.execute("SELECT * FROM gateway_jobs WHERE job_id=?", (job_id,)).fetchone()
                 self.db.commit()

@@ -2,7 +2,7 @@
   "candidate": "acceptance_gateway",
   "controls": {
     "all_v1_methods_authenticated": true,
-    "caller_request_id_secret_not_persisted": true,
+    "caller_secret_fields_not_persisted": true,
     "concurrent_workers_single_execution": true,
     "database_interruption_readiness_failure": true,
     "duplicate_delivery_one_job": true,

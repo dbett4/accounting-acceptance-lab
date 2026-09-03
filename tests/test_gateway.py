@@ -274,13 +274,14 @@ class GatewayHttpTest(unittest.TestCase):
                 if method != "HEAD":
                     self.assertEqual(body["error"]["code"], "method_not_allowed")
 
-    def test_caller_request_id_is_hashed_before_persistence(self):
+    def test_caller_request_and_idempotency_ids_are_hashed_before_persistence(self):
         status, _, headers = self.request("POST", "/v1/jobs", "alpha", {"case_id": "C01"},
-                                          {"Idempotency-Key": "request-id-secret", "X-Request-ID": "alpha"})
+                                          {"Idempotency-Key": "alpha", "X-Request-ID": "alpha"})
         self.assertEqual(status, 202)
         self.assertEqual(headers["X-Request-ID"], "alpha")
         jobs, _ = self.server.gateway_store.list_jobs("tenant-a", 100, None)
         self.assertNotIn("alpha", {job["request_id"] for job in jobs})
+        self.assertNotIn("alpha", {job["idempotency_digest"] for job in jobs})
         self.assertNotIn("alpha", {event["request_id"] for event in self.server.gateway_store.events()})
 
     def test_worker_is_not_an_http_route(self):

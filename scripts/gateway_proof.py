@@ -103,11 +103,11 @@ def main() -> None:
 
             request_secret = http_request(
                 "POST", "/v1/jobs", request_secret_token, {"case_id": "C01"},
-                {"Idempotency-Key": "request-secret", "X-Request-ID": request_secret_token},
+                {"Idempotency-Key": request_secret_token, "X-Request-ID": request_secret_token},
             )
             request_jobs, _ = server.gateway_store.list_jobs("request-secret-tenant", 100, None)
             request_persistence = json.dumps({"jobs": request_jobs, "events": server.gateway_store.events()}, sort_keys=True)
-            controls["caller_request_id_secret_not_persisted"] = request_secret[0] == 202 and request_secret_token not in request_persistence
+            controls["caller_secret_fields_not_persisted"] = request_secret[0] == 202 and request_secret_token not in request_persistence
             server.gateway_store.record_event(
                 "redaction_probe", tenant_id="tenant-a", job_id=http_job_id, trace_id="9" * 32,
                 span_id="8" * 16, request_id="redaction-proof", state_transition=None,
