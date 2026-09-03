@@ -8,31 +8,44 @@
     "effects": [],
     "generation": 1,
     "payload": {
-      "amount": 125.0,
-      "bank": {
-        "amount": "-125.00",
-        "date": "2026-01-02",
-        "record_id": "b1",
-        "reference": "INV-001",
-        "source": "bank",
-        "vendor": "Northwind Office"
-      },
-      "case_id": "C01",
-      "case_type": "clean_match",
       "citations": [],
-      "evidence_status": "fresh",
-      "gl": {
-        "amount": "125.00",
-        "date": "2026-01-02",
-        "record_id": "g1",
-        "reference": "INV-001",
-        "source": "gl",
-        "vendor": "Northwind Office"
-      },
-      "policy_version": "v2",
       "proposal": null,
-      "query": "exact invoice bank match",
+      "proposed_action": null,
       "readback": null,
+      "reconciliation": [
+        {
+          "case_id": "case-g1",
+          "matched_ids": [
+            "g1",
+            "b1"
+          ],
+          "reason": "exact amount, date, and reference",
+          "status": "clean_match"
+        }
+      ],
+      "source_records": [
+        {
+          "amount": "125.00",
+          "date": "2026-01-02",
+          "metadata": {
+            "policy_version": "v2",
+            "query": "exact invoice bank match"
+          },
+          "record_id": "g1",
+          "reference": "INV-001",
+          "source": "gl",
+          "vendor": "Northwind Office"
+        },
+        {
+          "amount": "-125.00",
+          "date": "2026-01-02",
+          "metadata": {},
+          "record_id": "b1",
+          "reference": "INV-001",
+          "source": "bank",
+          "vendor": "Northwind Office"
+        }
+      ],
       "verdict": "accepted_deterministic_match"
     },
     "state": "accepted"
@@ -45,31 +58,44 @@
     "effects": [],
     "generation": 1,
     "payload": {
-      "amount": 125.0,
-      "bank": {
-        "amount": "-125.00",
-        "date": "2026-01-02",
-        "record_id": "b1",
-        "reference": "INV-001",
-        "source": "bank",
-        "vendor": "Northwind Office"
-      },
-      "case_id": "C01",
-      "case_type": "clean_match",
       "citations": [],
-      "evidence_status": "fresh",
-      "gl": {
-        "amount": "125.00",
-        "date": "2026-01-02",
-        "record_id": "g1",
-        "reference": "INV-001",
-        "source": "gl",
-        "vendor": "Northwind Office"
-      },
-      "policy_version": "v2",
       "proposal": null,
-      "query": "exact invoice bank match",
+      "proposed_action": null,
       "readback": null,
+      "reconciliation": [
+        {
+          "case_id": "case-g1",
+          "matched_ids": [
+            "g1",
+            "b1"
+          ],
+          "reason": "exact amount, date, and reference",
+          "status": "clean_match"
+        }
+      ],
+      "source_records": [
+        {
+          "amount": "125.00",
+          "date": "2026-01-02",
+          "metadata": {
+            "policy_version": "v2",
+            "query": "exact invoice bank match"
+          },
+          "record_id": "g1",
+          "reference": "INV-001",
+          "source": "gl",
+          "vendor": "Northwind Office"
+        },
+        {
+          "amount": "-125.00",
+          "date": "2026-01-02",
+          "metadata": {},
+          "record_id": "b1",
+          "reference": "INV-001",
+          "source": "bank",
+          "vendor": "Northwind Office"
+        }
+      ],
       "verdict": "accepted_deterministic_match"
     },
     "state": "accepted"

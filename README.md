@@ -27,9 +27,9 @@ python3 -m aal.cli replay C12:timing:v1
 python3 -m aal.cli serve --port 8080
 ```
 
-The UI and health endpoint are then at `http://127.0.0.1:8080/` and `/health`. The service is localhost-only by default.
+The UI and health endpoint are then at `http://127.0.0.1:8080/` and `/health`. The service is localhost-only by default. Health executes `SELECT 1` against SQLite and returns HTTP 503 if the probe fails.
 
-**Approval lifecycle:** `approve` and `reject` record an attributable decision and advance the case generation. Approval alone does **not** apply a ledger effect. The CLI explicitly returns `effect_applied: false` when no effect exists. Applying an approved proposal is a separate bounded-ledger operation with an allowlisted action, the new expected generation, a semantic idempotency key, and native readback. Rejection is terminal.
+**Approval lifecycle:** `approve` and `reject` record an attributable decision and advance the case generation. An approval stores the exact proposal digest plus action, amount, currency, and resulting generation. Approval alone does **not** apply a ledger effect. Applying it is a separate bounded-ledger request that must match the approved scope exactly. Authorization precedes idempotency readback, and key reuse with different canonical request fields is rejected. Rejection is terminal.
 
 ## Optional OpenAI-compatible backend
 

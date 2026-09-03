@@ -31,7 +31,10 @@ def make_server(host: str, port: int, db_path: str | Path, artifact_dir: str | P
             self.send_header("Content-Length", str(len(body))); self.end_headers(); self.wfile.write(body)
         def do_GET(self):
             path = urlparse(self.path).path
-            if path == "/health": return self._json({"status":"ok","service":"accounting-acceptance-lab","database":"reachable"})
+            if path == "/health":
+                if lab.store.health_probe():
+                    return self._json({"status":"ok","service":"accounting-acceptance-lab","database":"reachable"})
+                return self._json({"status":"error","service":"accounting-acceptance-lab","database":"unreachable"}, 503)
             if path == "/api/cases":
                 rows = lab.store.cases()
                 for row in rows: row["approval"] = lab.store.approval(row["case_id"])

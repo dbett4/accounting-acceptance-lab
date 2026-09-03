@@ -13,74 +13,74 @@
   "packets": [
     {
       "case_id": "C01",
-      "latency_ms": 1.332,
-      "sha256": "78a773da1f36ae125547f83ad7526046a1bd8bf7b5d4d3341c1f9d9c064ee1f8",
+      "latency_ms": 2.698,
+      "sha256": "6d29ebb7a9bc871356295453e402232edf2a9dd38601da0705cde6cf95d24209",
       "verdict": "accepted_deterministic_match"
     },
     {
       "case_id": "C02",
-      "latency_ms": 2.153,
-      "sha256": "4739bb613c3a246cee7c8ef62a4b6f318674888ab32d475ac03a1218871736b2",
+      "latency_ms": 2.099,
+      "sha256": "f622c20882782161cfe0aa2cc84165386094a6607fb011e85fd8971ddbd340ad",
       "verdict": "blocked_pending_human_approval"
     },
     {
       "case_id": "C03",
-      "latency_ms": 1.645,
-      "sha256": "352bc156c0af9db8d72eb32f5c08e4d3aa26d1df72e4ff826144e6e65d0d70a3",
+      "latency_ms": 2.893,
+      "sha256": "1f3940a4703031afe9b14a8e5a2b7ace82fc4ef699d01be567ebe904ffa02806",
       "verdict": "blocked_pending_human_approval"
     },
     {
       "case_id": "C04",
-      "latency_ms": 1.731,
-      "sha256": "26545fcffd9d125bbca40d0667b1086eb169c359cb62140b3eb71b4b2564bda3",
+      "latency_ms": 2.051,
+      "sha256": "5969263327f8e5181e23d18b1cb01bf6d3a12911c0a81622664e5d392912b3c9",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C05",
-      "latency_ms": 3.973,
-      "sha256": "e8e64fd479e28726c533155c7766c1937766a267a68aed4961a459fc179687e3",
+      "latency_ms": 1.778,
+      "sha256": "597956e0f4031bd61c5860b3c6bedd7bffba4a56950340012997913836c35c05",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C06",
-      "latency_ms": 1.709,
-      "sha256": "5e7af724aaaeddec3d7bda5468fa8e2916dc65a18eb5263fed7bd65c9f966f63",
+      "latency_ms": 1.794,
+      "sha256": "bd215e859ec44d4cb546e8203b52b9f32e7c196adf4341165988313de123a0b4",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C07",
-      "latency_ms": 1.722,
-      "sha256": "b53018fae7a353bc3ec08b7c91a6d9471aa0d8537a89c35a1e119a3dcd29c7b9",
+      "latency_ms": 1.701,
+      "sha256": "2a85501769eccc13dc85fc0046e9b237457b7d256682cd9868cc10dce82dd33b",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C08",
-      "latency_ms": 1.673,
-      "sha256": "e90a8c69669a75d3f8adcd49d27afaa34f0963077a44a899972654276f8ba61d",
+      "latency_ms": 1.701,
+      "sha256": "555f4c24bc5e69e99c99c3d40277b601f6821f93ce0685876ee64e0d3a446363",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C09",
-      "latency_ms": 1.262,
-      "sha256": "826874b43239271dc47b0be368b6d4fa04af0b2c3429f161ad7d72320b0756a2",
+      "latency_ms": 1.15,
+      "sha256": "426fb9da1906166cc2bfbf001eb10929563f2693f66094db27d45edd0b1e4aac",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C10",
-      "latency_ms": 1.776,
-      "sha256": "0eb1802687e5f78fa0cf9192e325f5b5aae94afec8e9fe2e7763f743778846cc",
+      "latency_ms": 1.673,
+      "sha256": "f195885b5417c1c281ec708adb2bfb6a18b9ffc84dabc20c8fedf5ea552d7b45",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C11",
-      "latency_ms": 1.626,
-      "sha256": "01f9ce98980df9f632805c43901b7e4a1d14581e864110c6bf98602c6ae07eb6",
+      "latency_ms": 1.726,
+      "sha256": "e120b2b43d0211b08159dfe6bb2ba9ddb6a8cdb4282946ae755f38647766793d",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C12",
-      "latency_ms": 7.528,
-      "sha256": "69ebdd3f5c0ca76164f8676c6acea00fd097ea7a238f07ec44d645518895c6d6",
+      "latency_ms": 5.465,
+      "sha256": "1182aaf3283a026920a026b76eb3362a71848abe1fe08a86e3fce6bd40c33ae4",
       "verdict": "accepted_after_read_before_retry"
     }
   ],

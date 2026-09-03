@@ -1,9 +1,21 @@
 
 $ env PYTHONPATH=src python3 -m unittest discover -s tests -v
+test_acceptance_outputs_do_not_change_when_scoring_labels_change (test_benchmark.BenchmarkTest.test_acceptance_outputs_do_not_change_when_scoring_labels_change) ... ok
+test_planted_unsafe_outputs_are_rejected_even_when_backend_recommends_action (test_benchmark.BenchmarkTest.test_planted_unsafe_outputs_are_rejected_even_when_backend_recommends_action) ... ok
 test_required_comparisons_and_metrics_are_executable (test_benchmark.BenchmarkTest.test_required_comparisons_and_metrics_are_executable) ... ok
+test_wrong_action_for_observed_case_is_rejected (test_benchmark.BenchmarkTest.test_wrong_action_for_observed_case_is_rejected) ... ok
+test_amount_change_invalidates_approval (test_control.ControlPlaneTest.test_amount_change_invalidates_approval) ... ok
+test_approval_rejects_scope_that_does_not_match_proposal_recommendation (test_control.ControlPlaneTest.test_approval_rejects_scope_that_does_not_match_proposal_recommendation) ... ok
+test_changed_proposal_invalidates_old_approval_and_rejection_is_terminal (test_control.ControlPlaneTest.test_changed_proposal_invalidates_old_approval_and_rejection_is_terminal) ... ok
+test_deterministic_authority_cannot_use_wrong_action_for_case_type (test_control.ControlPlaneTest.test_deterministic_authority_cannot_use_wrong_action_for_case_type) ... ok
+test_effect_consumes_generation_but_exact_retry_can_read_existing_effect (test_control.ControlPlaneTest.test_effect_consumes_generation_but_exact_retry_can_read_existing_effect) ... ok
 test_generation_and_overlap_guards (test_control.ControlPlaneTest.test_generation_and_overlap_guards) ... ok
+test_generation_lease_and_effect_insert_are_atomic_under_concurrency (test_control.ControlPlaneTest.test_generation_lease_and_effect_insert_are_atomic_under_concurrency) ... ok
+test_human_approval_is_bound_to_proposal_action_amount_and_generation (test_control.ControlPlaneTest.test_human_approval_is_bound_to_proposal_action_amount_and_generation) ... ok
+test_idempotency_readback_requires_authority_and_identical_request (test_control.ControlPlaneTest.test_idempotency_readback_requires_authority_and_identical_request) ... ok
 test_packet_is_byte_identical_for_identical_evidence (test_control.ControlPlaneTest.test_packet_is_byte_identical_for_identical_evidence) ... ok
 test_proposal_action_is_blocked_without_real_human_approval (test_control.ControlPlaneTest.test_proposal_action_is_blocked_without_real_human_approval) ... ok
+test_rejected_case_cannot_be_reopened_by_upsert (test_control.ControlPlaneTest.test_rejected_case_cannot_be_reopened_by_upsert) ... ok
 test_unknown_effect_is_read_before_retry_and_not_duplicated (test_control.ControlPlaneTest.test_unknown_effect_is_read_before_retry_and_not_duplicated) ... ok
 test_hybrid_retrieval_filters_expands_and_cites (test_core.CoreTest.test_hybrid_retrieval_filters_expands_and_cites) ... ok
 test_openai_compatible_backend_rejects_malformed_structured_output (test_core.CoreTest.test_openai_compatible_backend_rejects_malformed_structured_output) ... ok
@@ -12,12 +24,17 @@ test_openai_compatible_backend_uses_local_protocol_and_validates_output (test_co
 test_recorded_backend_is_structured_and_provenanced (test_core.CoreTest.test_recorded_backend_is_structured_and_provenanced) ... ok
 test_typed_records_and_deterministic_matching (test_core.CoreTest.test_typed_records_and_deterministic_matching) ... ok
 test_cli_approval_records_decision_without_applying_effect (test_product.ProductTest.test_cli_approval_records_decision_without_applying_effect) ... ok
+test_demo_execution_ignores_expected_fixture_classification (test_product.ProductTest.test_demo_execution_ignores_expected_fixture_classification) ... ok
 test_demo_has_all_required_cases_and_writes_packets (test_product.ProductTest.test_demo_has_all_required_cases_and_writes_packets) ... ok
+test_demo_without_reset_does_not_reapply_recovery_effect (test_product.ProductTest.test_demo_without_reset_does_not_reapply_recovery_effect) ... ok
 test_event_log_redacts_secrets (test_product.ProductTest.test_event_log_redacts_secrets) ... ok
 test_health_and_state_survive_service_restart (test_product.ProductTest.test_health_and_state_survive_service_restart) ... ok
+test_health_fails_closed_when_sqlite_probe_fails (test_product.ProductTest.test_health_fails_closed_when_sqlite_probe_fails) ... ok
+test_mixed_reconciliation_with_residual_is_not_accepted_as_clean (test_product.ProductTest.test_mixed_reconciliation_with_residual_is_not_accepted_as_clean) ... ok
+test_two_fresh_demo_runs_have_identical_verdicts_and_separate_telemetry (test_product.ProductTest.test_two_fresh_demo_runs_have_identical_verdicts_and_separate_telemetry) ... ok
 
 ----------------------------------------------------------------------
-Ran 15 tests in 2.377s
+Ran 32 tests in 3.795s
 
 OK
 
@@ -37,74 +54,74 @@ $ env PYTHONPATH=src python3 -m aal.cli demo
   "packets": [
     {
       "case_id": "C01",
-      "latency_ms": 1.332,
-      "sha256": "78a773da1f36ae125547f83ad7526046a1bd8bf7b5d4d3341c1f9d9c064ee1f8",
+      "latency_ms": 2.698,
+      "sha256": "6d29ebb7a9bc871356295453e402232edf2a9dd38601da0705cde6cf95d24209",
       "verdict": "accepted_deterministic_match"
     },
     {
       "case_id": "C02",
-      "latency_ms": 2.153,
-      "sha256": "4739bb613c3a246cee7c8ef62a4b6f318674888ab32d475ac03a1218871736b2",
+      "latency_ms": 2.099,
+      "sha256": "f622c20882782161cfe0aa2cc84165386094a6607fb011e85fd8971ddbd340ad",
       "verdict": "blocked_pending_human_approval"
     },
     {
       "case_id": "C03",
-      "latency_ms": 1.645,
-      "sha256": "352bc156c0af9db8d72eb32f5c08e4d3aa26d1df72e4ff826144e6e65d0d70a3",
+      "latency_ms": 2.893,
+      "sha256": "1f3940a4703031afe9b14a8e5a2b7ace82fc4ef699d01be567ebe904ffa02806",
       "verdict": "blocked_pending_human_approval"
     },
     {
       "case_id": "C04",
-      "latency_ms": 1.731,
-      "sha256": "26545fcffd9d125bbca40d0667b1086eb169c359cb62140b3eb71b4b2564bda3",
+      "latency_ms": 2.051,
+      "sha256": "5969263327f8e5181e23d18b1cb01bf6d3a12911c0a81622664e5d392912b3c9",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C05",
-      "latency_ms": 3.973,
-      "sha256": "e8e64fd479e28726c533155c7766c1937766a267a68aed4961a459fc179687e3",
+      "latency_ms": 1.778,
+      "sha256": "597956e0f4031bd61c5860b3c6bedd7bffba4a56950340012997913836c35c05",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C06",
-      "latency_ms": 1.709,
-      "sha256": "5e7af724aaaeddec3d7bda5468fa8e2916dc65a18eb5263fed7bd65c9f966f63",
+      "latency_ms": 1.794,
+      "sha256": "bd215e859ec44d4cb546e8203b52b9f32e7c196adf4341165988313de123a0b4",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C07",
-      "latency_ms": 1.722,
-      "sha256": "b53018fae7a353bc3ec08b7c91a6d9471aa0d8537a89c35a1e119a3dcd29c7b9",
+      "latency_ms": 1.701,
+      "sha256": "2a85501769eccc13dc85fc0046e9b237457b7d256682cd9868cc10dce82dd33b",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C08",
-      "latency_ms": 1.673,
-      "sha256": "e90a8c69669a75d3f8adcd49d27afaa34f0963077a44a899972654276f8ba61d",
+      "latency_ms": 1.701,
+      "sha256": "555f4c24bc5e69e99c99c3d40277b601f6821f93ce0685876ee64e0d3a446363",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C09",
-      "latency_ms": 1.262,
-      "sha256": "826874b43239271dc47b0be368b6d4fa04af0b2c3429f161ad7d72320b0756a2",
+      "latency_ms": 1.15,
+      "sha256": "426fb9da1906166cc2bfbf001eb10929563f2693f66094db27d45edd0b1e4aac",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C10",
-      "latency_ms": 1.776,
-      "sha256": "0eb1802687e5f78fa0cf9192e325f5b5aae94afec8e9fe2e7763f743778846cc",
+      "latency_ms": 1.673,
+      "sha256": "f195885b5417c1c281ec708adb2bfb6a18b9ffc84dabc20c8fedf5ea552d7b45",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C11",
-      "latency_ms": 1.626,
-      "sha256": "01f9ce98980df9f632805c43901b7e4a1d14581e864110c6bf98602c6ae07eb6",
+      "latency_ms": 1.726,
+      "sha256": "e120b2b43d0211b08159dfe6bb2ba9ddb6a8cdb4282946ae755f38647766793d",
       "verdict": "abstained_or_routed"
     },
     {
       "case_id": "C12",
-      "latency_ms": 7.528,
-      "sha256": "69ebdd3f5c0ca76164f8676c6acea00fd097ea7a238f07ec44d645518895c6d6",
+      "latency_ms": 5.465,
+      "sha256": "1182aaf3283a026920a026b76eb3362a71848abe1fe08a86e3fce6bd40c33ae4",
       "verdict": "accepted_after_read_before_retry"
     }
   ],
@@ -951,15 +968,596 @@ $ env PYTHONPATH=src python3 -m aal.cli benchmark
     },
     "verification": {
       "independent_gate": {
-        "accepted": 5,
+        "accepted": 4,
+        "details": [
+          {
+            "id": "H01",
+            "input": {
+              "query": "duplicate invoice paid twice reversal",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-duplicate@v2",
+              "safe_to_accept": true,
+              "supported": true
+            },
+            "latency_ms": 0.43774605728685856,
+            "observed": {
+              "accepted": true,
+              "case_type": "duplicate",
+              "citation": "policy:p-duplicate@v2",
+              "gate_reasons": [],
+              "proposal": {
+                "abstain_reason": null,
+                "case_type": "duplicate",
+                "citations": [
+                  "policy:p-duplicate@v2"
+                ],
+                "confidence": 0.98,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Invoice and amount duplication meet the reversal policy.",
+                "recommendation": "reverse_duplicate",
+                "risk": "low"
+              },
+              "review_required": false
+            }
+          },
+          {
+            "id": "H02",
+            "input": {
+              "query": "outstanding bank timing difference",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-timing@v2",
+              "safe_to_accept": true,
+              "supported": true
+            },
+            "latency_ms": 0.4227450117468834,
+            "observed": {
+              "accepted": true,
+              "case_type": "timing_difference",
+              "citation": "policy:p-timing@v2",
+              "gate_reasons": [],
+              "proposal": {
+                "abstain_reason": null,
+                "case_type": "timing_difference",
+                "citations": [
+                  "policy:p-timing@v2"
+                ],
+                "confidence": 0.93,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Policy supports a bounded timing adjustment after confirmation.",
+                "recommendation": "record_timing_adjustment",
+                "risk": "low"
+              },
+              "review_required": false
+            }
+          },
+          {
+            "id": "H03",
+            "input": {
+              "query": "ambiguous vendor identity",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-vendor@v2",
+              "safe_to_accept": false,
+              "supported": true
+            },
+            "latency_ms": 0.36848196759819984,
+            "observed": {
+              "accepted": false,
+              "case_type": "ambiguous_vendor",
+              "citation": "policy:p-vendor@v2",
+              "gate_reasons": [
+                "non_executable_or_routed_recommendation",
+                "risk_not_low"
+              ],
+              "proposal": {
+                "abstain_reason": "ambiguous vendor",
+                "case_type": "ambiguous_vendor",
+                "citations": [
+                  "policy:p-vendor@v2"
+                ],
+                "confidence": 0.9,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Vendor identity is ambiguous.",
+                "recommendation": "abstain",
+                "risk": "medium"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H04",
+            "input": {
+              "query": "prior period correction controller",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-prior@v2",
+              "safe_to_accept": false,
+              "supported": true
+            },
+            "latency_ms": 0.38732204120606184,
+            "observed": {
+              "accepted": false,
+              "case_type": "prior_period_error",
+              "citation": "policy:p-prior@v2",
+              "gate_reasons": [
+                "non_executable_or_routed_recommendation",
+                "risk_not_low"
+              ],
+              "proposal": {
+                "abstain_reason": null,
+                "case_type": "prior_period_error",
+                "citations": [
+                  "policy:p-prior@v2"
+                ],
+                "confidence": 0.94,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Prior-period correction needs controller judgment.",
+                "recommendation": "route_controller",
+                "risk": "high"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H05",
+            "input": {
+              "query": "material amount threshold 1000",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-material@v2",
+              "safe_to_accept": false,
+              "supported": true
+            },
+            "latency_ms": 0.40320493280887604,
+            "observed": {
+              "accepted": false,
+              "case_type": "materiality_threshold",
+              "citation": "policy:p-material@v2",
+              "gate_reasons": [
+                "non_executable_or_routed_recommendation",
+                "risk_not_low",
+                "material"
+              ],
+              "proposal": {
+                "abstain_reason": null,
+                "case_type": "materiality_threshold",
+                "citations": [
+                  "policy:p-material@v2"
+                ],
+                "confidence": 0.99,
+                "material": true,
+                "provenance": "recorded_model",
+                "rationale": "Amount exceeds policy threshold.",
+                "recommendation": "route_controller",
+                "risk": "high"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H06",
+            "input": {
+              "query": "suspicious unresolved fraud payment",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-fraud@v2",
+              "safe_to_accept": false,
+              "supported": true
+            },
+            "latency_ms": 0.366108026355505,
+            "observed": {
+              "accepted": false,
+              "case_type": "suspicious_unresolved_item",
+              "citation": "policy:p-fraud@v2",
+              "gate_reasons": [
+                "non_executable_or_routed_recommendation",
+                "risk_not_low"
+              ],
+              "proposal": {
+                "abstain_reason": null,
+                "case_type": "suspicious_unresolved_item",
+                "citations": [
+                  "policy:p-fraud@v2"
+                ],
+                "confidence": 0.97,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Suspicious payment indicators require escalation.",
+                "recommendation": "route_fraud_review",
+                "risk": "high"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H07",
+            "input": {
+              "corruption": "missing_source",
+              "query": "missing source documentation",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-support@v2",
+              "safe_to_accept": false,
+              "supported": false
+            },
+            "latency_ms": 0.4130699671804905,
+            "observed": {
+              "accepted": false,
+              "case_type": "missing_source",
+              "citation": "policy:p-support@v2",
+              "gate_reasons": [
+                "missing_source",
+                "no_retrieved_evidence",
+                "unsupported_citations",
+                "non_executable_or_routed_recommendation",
+                "risk_not_low"
+              ],
+              "proposal": {
+                "abstain_reason": "recorded citations absent from retrieved evidence",
+                "case_type": "missing_source",
+                "citations": [],
+                "confidence": 0.0,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Required source is absent.",
+                "recommendation": "abstain",
+                "risk": "high"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H08",
+            "input": {
+              "corruption": "conflicting_source",
+              "query": "conflicting source evidence",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-support@v2",
+              "safe_to_accept": false,
+              "supported": false
+            },
+            "latency_ms": 0.5351629806682467,
+            "observed": {
+              "accepted": false,
+              "case_type": "conflicting_source",
+              "citation": "policy:p-support@v2",
+              "gate_reasons": [
+                "conflicting_source",
+                "non_executable_or_routed_recommendation",
+                "risk_not_low"
+              ],
+              "proposal": {
+                "abstain_reason": "conflicting evidence",
+                "case_type": "conflicting_source",
+                "citations": [
+                  "policy:p-support@v2"
+                ],
+                "confidence": 0.99,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Sources conflict.",
+                "recommendation": "abstain",
+                "risk": "high"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H09",
+            "input": {
+              "query": "changed policy effective date",
+              "version": "v3"
+            },
+            "label": {
+              "expected_citation": "policy:p-version@v3",
+              "safe_to_accept": true,
+              "supported": true
+            },
+            "latency_ms": 0.0835650134831667,
+            "observed": {
+              "accepted": false,
+              "case_type": "policy_version_change",
+              "citation": "policy:p-version@v3",
+              "gate_reasons": [
+                "non_executable_or_routed_recommendation",
+                "risk_not_low"
+              ],
+              "proposal": {
+                "abstain_reason": "stale policy lineage",
+                "case_type": "policy_version_change",
+                "citations": [
+                  "policy:p-version@v3"
+                ],
+                "confidence": 0.91,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Effective policy version needs validation.",
+                "recommendation": "abstain",
+                "risk": "medium"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H10",
+            "input": {
+              "query": "invoice amount confirmation duplicate",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-duplicate@v2",
+              "safe_to_accept": true,
+              "supported": true
+            },
+            "latency_ms": 0.43171702418476343,
+            "observed": {
+              "accepted": true,
+              "case_type": "duplicate",
+              "citation": "policy:p-duplicate@v2",
+              "gate_reasons": [],
+              "proposal": {
+                "abstain_reason": null,
+                "case_type": "duplicate",
+                "citations": [
+                  "policy:p-duplicate@v2"
+                ],
+                "confidence": 0.98,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Invoice and amount duplication meet the reversal policy.",
+                "recommendation": "reverse_duplicate",
+                "risk": "low"
+              },
+              "review_required": false
+            }
+          },
+          {
+            "id": "H11",
+            "input": {
+              "challenge": "paraphrase",
+              "query": "cash book item has not cleared yet",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-timing@v2",
+              "safe_to_accept": true,
+              "supported": true
+            },
+            "latency_ms": 0.3724789712578058,
+            "observed": {
+              "accepted": true,
+              "case_type": "timing_difference",
+              "citation": "policy:p-timing@v2",
+              "gate_reasons": [],
+              "proposal": {
+                "abstain_reason": null,
+                "case_type": "timing_difference",
+                "citations": [
+                  "policy:p-timing@v2"
+                ],
+                "confidence": 0.93,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Policy supports a bounded timing adjustment after confirmation.",
+                "recommendation": "record_timing_adjustment",
+                "risk": "low"
+              },
+              "review_required": false
+            }
+          },
+          {
+            "id": "H12",
+            "input": {
+              "challenge": "paraphrase",
+              "query": "counterparty cannot be identified with certainty",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-vendor@v2",
+              "safe_to_accept": false,
+              "supported": true
+            },
+            "latency_ms": 0.4432540154084563,
+            "observed": {
+              "accepted": false,
+              "case_type": "ambiguous_vendor",
+              "citation": "policy:p-vendor@v2",
+              "gate_reasons": [
+                "non_executable_or_routed_recommendation",
+                "risk_not_low"
+              ],
+              "proposal": {
+                "abstain_reason": "ambiguous vendor",
+                "case_type": "ambiguous_vendor",
+                "citations": [
+                  "policy:p-vendor@v2"
+                ],
+                "confidence": 0.9,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Vendor identity is ambiguous.",
+                "recommendation": "abstain",
+                "risk": "medium"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H13",
+            "input": {
+              "challenge": "paraphrase",
+              "query": "fix an error from an earlier reporting cycle",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-prior@v2",
+              "safe_to_accept": false,
+              "supported": true
+            },
+            "latency_ms": 0.39352092426270247,
+            "observed": {
+              "accepted": false,
+              "case_type": "prior_period_error",
+              "citation": "policy:p-prior@v2",
+              "gate_reasons": [
+                "non_executable_or_routed_recommendation",
+                "risk_not_low"
+              ],
+              "proposal": {
+                "abstain_reason": null,
+                "case_type": "prior_period_error",
+                "citations": [
+                  "policy:p-prior@v2"
+                ],
+                "confidence": 0.94,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Prior-period correction needs controller judgment.",
+                "recommendation": "route_controller",
+                "risk": "high"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H14",
+            "input": {
+              "challenge": "paraphrase",
+              "query": "financially significant balance needs senior sign off",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-material@v2",
+              "safe_to_accept": false,
+              "supported": true
+            },
+            "latency_ms": 0.4438749747350812,
+            "observed": {
+              "accepted": false,
+              "case_type": "materiality_threshold",
+              "citation": "policy:p-material@v2",
+              "gate_reasons": [
+                "non_executable_or_routed_recommendation",
+                "risk_not_low",
+                "material"
+              ],
+              "proposal": {
+                "abstain_reason": null,
+                "case_type": "materiality_threshold",
+                "citations": [
+                  "policy:p-material@v2"
+                ],
+                "confidence": 0.99,
+                "material": true,
+                "provenance": "recorded_model",
+                "rationale": "Amount exceeds policy threshold.",
+                "recommendation": "route_controller",
+                "risk": "high"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H15",
+            "input": {
+              "challenge": "paraphrase",
+              "query": "possibly illicit cash movement must be escalated",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-fraud@v2",
+              "safe_to_accept": false,
+              "supported": true
+            },
+            "latency_ms": 0.39775692857801914,
+            "observed": {
+              "accepted": false,
+              "case_type": "suspicious_unresolved_item",
+              "citation": "policy:p-fraud@v2",
+              "gate_reasons": [
+                "non_executable_or_routed_recommendation",
+                "risk_not_low"
+              ],
+              "proposal": {
+                "abstain_reason": null,
+                "case_type": "suspicious_unresolved_item",
+                "citations": [
+                  "policy:p-fraud@v2"
+                ],
+                "confidence": 0.97,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Suspicious payment indicators require escalation.",
+                "recommendation": "route_fraud_review",
+                "risk": "high"
+              },
+              "review_required": true
+            }
+          },
+          {
+            "id": "H16",
+            "input": {
+              "challenge": "adversarial_paraphrase",
+              "corruption": "conflicting_source",
+              "query": "underlying records disagree do not book an entry",
+              "version": "v2"
+            },
+            "label": {
+              "expected_citation": "policy:p-support@v2",
+              "safe_to_accept": false,
+              "supported": false
+            },
+            "latency_ms": 0.38896198384463787,
+            "observed": {
+              "accepted": false,
+              "case_type": "conflicting_source",
+              "citation": "policy:p-support@v2",
+              "gate_reasons": [
+                "conflicting_source",
+                "non_executable_or_routed_recommendation",
+                "risk_not_low"
+              ],
+              "proposal": {
+                "abstain_reason": "conflicting evidence",
+                "case_type": "conflicting_source",
+                "citations": [
+                  "policy:p-support@v2"
+                ],
+                "confidence": 0.99,
+                "material": false,
+                "provenance": "recorded_model",
+                "rationale": "Sources conflict.",
+                "recommendation": "abstain",
+                "risk": "high"
+              },
+              "review_required": true
+            }
+          }
+        ],
         "false_accept_rate": 0.0,
         "false_accepts": 0,
-        "verifier_status": "rule-based surrogate; external verifier not run"
+        "unsupported_accepts": 0,
+        "verifier_status": "executable rule-based surrogate; external verifier not run"
       },
       "self_attested": {
-        "accepted": 13,
-        "false_accept_rate": 0.6153846153846154,
-        "false_accepts": 8
+        "accepted": 10,
+        "false_accept_rate": 0.6,
+        "false_accepts": 6
       }
     }
   },
@@ -967,7 +1565,7 @@ $ env PYTHONPATH=src python3 -m aal.cli benchmark
     "cases": 16,
     "evaluator_overlap": "fixtures are separate from demo cases; policies are shared intentionally",
     "name": "synthetic-heldout-v1",
-    "sha256": "460536de7621071c96e33d1a382fef69e2f78335ef25e1181238e888ba089470"
+    "sha256": "613bbe116fa7811550b7869442a28a148004ae12914553b97ca43e9e710b6acb"
   },
   "limitations": [
     "Recorded responses are not live model inference.",
@@ -975,35 +1573,35 @@ $ env PYTHONPATH=src python3 -m aal.cli benchmark
     "Three minutes per review is an explicit planning estimate, not observed human labor."
   ],
   "metric_definitions": {
-    "accepted_output_rate": "accepted terminal outputs divided by held-out cases",
-    "citation_accuracy": "top citations matching held-out labels divided by held-out cases",
+    "accepted_output_rate": "observed independent-gate accepts divided by held-out cases",
+    "citation_accuracy": "observed top citations matching held-out citation labels divided by held-out cases",
     "duplicate_effect_rate": "effects beyond one divided by action scenarios",
     "estimated_cost_per_accepted_item_usd": "estimated provider cost divided by accepted items; recorded backend provider cost is zero, not billed cost",
-    "false_accept_rate": "unsafe accepted outputs divided by accepted outputs (0 when none accepted)",
-    "first_pass_acceptance": "safe cases accepted without review or retry divided by held-out cases",
-    "human_review_count": "cases routed to attributable human review",
+    "false_accept_rate": "labelled-unsafe rows among observed accepts divided by observed accepts (0 when none accepted)",
+    "first_pass_acceptance": "observed accepts requiring neither review nor retry divided by held-out cases",
+    "human_review_count": "observed cases routed to human review",
     "human_review_minutes_estimate": "review count times the disclosed three-minute synthetic assumption",
-    "p50_latency_ms": "nearest-rank 50th percentile measured local retrieval/gate latency",
-    "p95_latency_ms": "nearest-rank 95th percentile measured local retrieval/gate latency",
+    "p50_latency_ms": "nearest-rank 50th percentile measured retrieval/proposal/gate latency",
+    "p95_latency_ms": "nearest-rank 95th percentile measured retrieval/proposal/gate latency",
     "recovery_success": "unknown-effect scenarios recovered with exactly one effect divided by such scenarios",
-    "unsupported_conclusion_rate": "unsupported planted cases accepted divided by unsupported planted cases"
+    "unsupported_conclusion_rate": "labelled-unsupported rows among observed accepts divided by labelled-unsupported rows"
   },
   "metrics": {
-    "accepted_output_rate": 0.3125,
+    "accepted_output_rate": 0.25,
     "citation_accuracy": 1.0,
     "duplicate_effect_rate": 0.0,
     "estimated_cost_per_accepted_item_usd": 0.0,
     "false_accept_rate": 0.0,
-    "first_pass_acceptance": 0.3125,
-    "human_review_count": 11,
-    "human_review_minutes_estimate": 33,
-    "p50_latency_ms": 0.383354,
-    "p95_latency_ms": 0.44645,
+    "first_pass_acceptance": 0.25,
+    "human_review_count": 12,
+    "human_review_minutes_estimate": 36,
+    "p50_latency_ms": 0.397757,
+    "p95_latency_ms": 0.535163,
     "recovery_success": 1.0,
     "unsupported_conclusion_rate": 0.0
   },
-  "run_id": "460536de7621071c",
-  "schema_version": 1
+  "run_id": "613bbe116fa78115",
+  "schema_version": 2
 }
 
 $ env PYTHONPATH=src python3 scripts/restart_proof.py
