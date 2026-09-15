@@ -458,14 +458,15 @@ def _public_job(job: dict[str, Any]) -> dict[str, Any]:
 
 
 class GatewayServer(ThreadingHTTPServer):
-    daemon_threads = True
+    daemon_threads = False
 
     def server_close(self) -> None:
+        # Join request threads before closing the database they still use.
+        super().server_close()
         try:
             self.gateway_store.close()
         except sqlite3.Error:
             pass
-        super().server_close()
 
 
 def make_gateway_server(host: str, port: int, db_path: str | Path, artifact_dir: str | Path,
@@ -478,6 +479,7 @@ def make_gateway_server(host: str, port: int, db_path: str | Path, artifact_dir:
     class Handler(BaseHTTPRequestHandler):
         server_version = "AcceptanceGateway/1"
         sys_version = ""
+        timeout = 10  # Socket inactivity must not hold request draining forever.
 
         def _context(self) -> tuple[str, str, str] | None:
             incoming = self.headers.get("traceparent")

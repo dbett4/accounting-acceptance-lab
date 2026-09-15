@@ -1,0 +1,30 @@
+{
+  "trial_id": "AAL-BLIND-DUPLICATE-REVERSAL-2026-09-15",
+  "frozen": true,
+  "authorship_boundary": "Prepared without reading evaluator implementation, tests, or bundled example contents and without executing or importing the evaluator.",
+  "expected_counts": {
+    "checks_failed": 7,
+    "review_required": 0,
+    "checks_passed_within_scope": 3
+  },
+  "members": [
+    {"member_id":"M01","classification":"contract","case":"cases/case-01-simple.json","proposal":"proposals/proposal-01-simple-pass.json","expected_outcome":"checks_passed_within_scope","rationale":"Both source journals debit supplies 240.00 and credit payable 240.00. The proposal exactly negates the target by account, cites the typed two-journal duplicate confirmation, is dated after both sources, and has complete history with no prior reversal."},
+    {"member_id":"M02","classification":"contract","case":"cases/case-02-split.json","proposal":"proposals/proposal-02-split-pass.json","expected_outcome":"checks_passed_within_scope","rationale":"The target totals debits of 300.00 software and 125.50 hosting against 425.50 payable. Proposal aggregates/splits differently but credits those expense totals and debits payable 425.50, testing account-total arithmetic rather than line pairing."},
+    {"member_id":"M03","classification":"contract","case":"cases/case-03-wrong-amount.json","proposal":"proposals/proposal-03-wrong-amount-fail.json","expected_outcome":"checks_failed","rationale":"Although proposal debits and credits each total 99.95, it credits repairs only 99.90 and invents a 0.05 rounding-account effect; account-level reversal is not exact."},
+    {"member_id":"M04","classification":"contract","case":"cases/case-04-missing-evidence.json","proposal":"proposals/proposal-04-missing-evidence-fail.json","expected_outcome":"checks_failed","rationale":"The journal reversal arithmetic is exact, but only invoice context exists. The required typed duplicate_confirmation for exactly the source pair is absent."},
+    {"member_id":"M05","classification":"challenge","case":"cases/case-05-ambiguity.json","proposal":"proposals/proposal-05-ambiguity-fail.json","expected_outcome":"checks_failed","rationale":"This deliberately nonobvious pair has matching purchase identity, date, amount, and duplicate confirmation, but a typed distinct_purchases record for the same pair makes reversal definitely unsafe under the documented contract. The conflicting evidence classification is synthetic and intentional."},
+    {"member_id":"M06","classification":"contract","case":"cases/case-06-prior-reversal.json","proposal":"proposals/proposal-06-prior-reversal-fail.json","expected_outcome":"checks_failed","rationale":"Arithmetic and evidence pass in isolation, but the target appears in prior_reversals; another reversal would duplicate the correcting effect."},
+    {"member_id":"M07","classification":"contract","case":"cases/case-07-incomplete-history.json","proposal":"proposals/proposal-07-incomplete-history-fail.json","expected_outcome":"checks_failed","rationale":"The reversal is mathematically exact and supported, but history_complete is false, so absence of an earlier reversal is indeterminate and accounting checks cannot pass."},
+    {"member_id":"M08","classification":"contract","case":"cases/case-08-timing.json","proposal":"proposals/proposal-08-timing-fail.json","expected_outcome":"checks_failed","rationale":"The proposal is in-period but dated before both source postings, violating the temporal requirement even though arithmetic and evidence otherwise align."},
+    {"member_id":"M09A","classification":"contract","case":"cases/case-09-paired.json","proposal":"proposals/proposal-09a-erroneous-fail.json","expected_outcome":"checks_failed","rationale":"Identical case to M09B. The proposal balances 750.00 but credits materials 750.00 instead of materials 700.00 and services 50.00, so account effects do not negate the target."},
+    {"member_id":"M09B","classification":"contract","case":"cases/case-09-paired.json","proposal":"proposals/proposal-09b-corrected-pass.json","expected_outcome":"checks_passed_within_scope","rationale":"Identical case to M09A. The corrected proposal debits payable 750.00 and credits materials 700.00 plus services 50.00, exactly negating target account totals."}
+  ],
+  "trial_limitations": [
+    "All entities, journals, evidence, and amounts are invented and contain no client data.",
+    "Expected outcomes are author predictions grounded in the published interface contract and journal arithmetic; the evaluator has not been run or imported.",
+    "Typed evidence is assumed supplied as stated and is not authenticated; free text is not interpreted.",
+    "Passing means checks passed within the evaluator's narrow supplied-data scope only. It does not establish accounting truth, authorize or perform posting, prove ledger effect, or constitute independent professional accounting assurance.",
+    "The trial does not test reviewer approval because every case sets require_review false.",
+    "M05 is explicitly a challenge case involving contradictory typed classifications; all other members stay within the narrow documented duplicate-reversal contract."
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "name": "synthetic-candidate-after",
+  "members": [
+    {"id": "split-reversal", "case": "cases/case-02-split.json", "proposal": "proposals/proposal-02-split-pass.json", "review": null},
+    {"id": "missing-support", "case": "cases/case-04-missing-evidence.json", "proposal": "proposals/proposal-04-missing-evidence-fail.json", "review": null},
+    {"id": "allocation", "case": "cases/case-09-paired.json", "proposal": "proposals/proposal-09b-corrected-pass.json", "review": null}
+  ]
+}

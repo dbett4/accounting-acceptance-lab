@@ -1,0 +1,22 @@
+{
+  "cases/case-01-simple.json": "b75b71c3feb6407ce8c0f099f4f28215e386f451b7f3fd39900522c8b501377f",
+  "cases/case-02-split.json": "b73feae56a10b55cfa234b91c1cab060593affaa9b03671d466e539121474d5b",
+  "cases/case-03-wrong-amount.json": "ea253c8b6d6085a117286cf82aa8da6e28018c031b722013879e28adb4957765",
+  "cases/case-04-missing-evidence.json": "64eb3f82b63602d9f35dbf91d86bd9ba8ae4cc12a399bd5473ccf88092aa8a21",
+  "cases/case-05-ambiguity.json": "a887df11a2c9adecd6c73f7315736a43bce140c2be737050c4391abbf4ffe407",
+  "cases/case-06-prior-reversal.json": "1b4f93c162cc287ecc7e9a18fcd001489dc32524d1e07e178263d6377a8b1fc9",
+  "cases/case-07-incomplete-history.json": "b3d34e9711799560edd3863dbd7538f31122b528cea491e9a7de4180350e63d1",
+  "cases/case-08-timing.json": "0b267757c2a8f0a8f0ab552324ab5607e9779f82f7d8e29894fc7e6eb9fe1c1e",
+  "cases/case-09-paired.json": "4855b49c2556311cdb4196fc947cd525ab5c01a7dde6e7985d0e06f5ffd79483",
+  "manifest.json": "923d92181e43eef42f1f4ffc15b85a43063aba3294e324e43e097537e577e9e1",
+  "proposals/proposal-01-simple-pass.json": "aef0ea80a186dbf310ae3b57c6bb7a4166f5353b673dd495661ea1fd6680ab63",
+  "proposals/proposal-02-split-pass.json": "97fea74a2d40f805207c450e6b679adf2d707ad56b72853391152657b78e8652",
+  "proposals/proposal-03-wrong-amount-fail.json": "8931ea1fcda6f3ed3538231e773ba32d621424856b555d9b9659b8ebc135d8ea",
+  "proposals/proposal-04-missing-evidence-fail.json": "e9dea8c3627045544e67d2b585a54ba225300f8094e6eec7d41b2abeceb6c5e3",
+  "proposals/proposal-05-ambiguity-fail.json": "ee3326e1526a73fc24fe5059a5612e48f53df292c98f9f103f2d84f2c46a88f2",
+  "proposals/proposal-06-prior-reversal-fail.json": "e4dba40e9e81264d53b6d1f2ca1e93d12f771a34a1683174702e25ede946f934",
+  "proposals/proposal-07-incomplete-history-fail.json": "1c1f1a627707d046bf53953743790fa18255a71a9ad809381c44c7d6d865f9ad",
+  "proposals/proposal-08-timing-fail.json": "71957822ed1f584c69e81d79c2abb52647e3b9d55257df357793d6279bccf60e",
+  "proposals/proposal-09a-erroneous-fail.json": "7fe6cb75efec05a442f608184c655c25cf71960c92affa08851470759e63ccf1",
+  "proposals/proposal-09b-corrected-pass.json": "61124e36c839e9514656dfb0e381d597511c86814b97d31d23fe2d200beb66b7"
+}

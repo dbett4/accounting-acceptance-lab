@@ -21,12 +21,72 @@ def main(argv=None):
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("demo")
     sub.add_parser("benchmark")
+    for command in ("evaluate", "review-proposal"):
+        p = sub.add_parser(command)
+        p.add_argument("--case", required=True)
+        p.add_argument("--proposal", required=True)
+        p.add_argument("--out", required=True)
+        if command == "evaluate":
+            p.add_argument("--review")
+            p.add_argument("--format", choices=("json", "text"), default="json", help="stdout format; --out always preserves full JSON")
+        else:
+            p.add_argument("--actor", required=True)
+            p.add_argument("--decision", choices=("approve", "reject"), required=True)
+            p.add_argument("--reason", required=True)
+    comparison = sub.add_parser("compare")
+    comparison.add_argument("before")
+    comparison.add_argument("after")
+    comparison.add_argument("--format", choices=("json", "text"), default="json")
+    batch = sub.add_parser("evaluate-batch")
+    batch.add_argument("--manifest", required=True)
+    batch.add_argument("--out", required=True)
+    batch.add_argument("--format", choices=("json", "text"), default="json")
+    batch_comparison = sub.add_parser("compare-batches")
+    batch_comparison.add_argument("before")
+    batch_comparison.add_argument("after")
+    batch_comparison.add_argument("--format", choices=("json", "text"), default="json")
     inspect = sub.add_parser("inspect"); inspect.add_argument("case_id")
     for decision in ("approve", "reject"):
         p = sub.add_parser(decision); p.add_argument("case_id"); p.add_argument("--actor", required=True); p.add_argument("--reason", required=True)
     replay = sub.add_parser("replay"); replay.add_argument("idempotency_key")
     serve = sub.add_parser("serve"); serve.add_argument("--host", default="127.0.0.1"); serve.add_argument("--port", type=int, default=8080)
     args = parser.parse_args(argv)
+    if args.command in {"evaluate-batch", "compare-batches"}:
+        from .batch import compare_batches, evaluate_batch, exit_code, format_batch_text
+        from .evaluation import load
+        try:
+            if args.command == "evaluate-batch":
+                result = evaluate_batch(args.manifest)
+                with Path(args.out).open("x", encoding="utf-8") as output:
+                    output.write(json.dumps(result, indent=2, sort_keys=True) + "\n")
+            else:
+                result = compare_batches(load(args.before), load(args.after))
+            print(format_batch_text(result) if args.format == "text" else json.dumps(result, indent=2, sort_keys=True))
+        except (ValueError, OSError, KeyError, TypeError) as exc:
+            parser.error(str(exc))
+        if args.command == "evaluate-batch":
+            raise SystemExit(exit_code(result))
+        return
+    if args.command in {"evaluate", "review-proposal", "compare"}:
+        from .evaluation import compare, evaluate, format_text, load, review
+        try:
+            if args.command == "compare":
+                result = compare(load(args.before), load(args.after))
+            else:
+                case, proposal = load(args.case), load(args.proposal)
+                if args.command == "evaluate":
+                    result = evaluate(case, proposal, load(args.review) if args.review else None)
+                else:
+                    result = review(case, proposal, args.actor, args.decision, args.reason)
+                # Preserve earlier failures and source inputs, including symlink targets.
+                with Path(args.out).open("x", encoding="utf-8") as output:
+                    output.write(json.dumps(result, indent=2, sort_keys=True) + "\n")
+            print(format_text(result) if getattr(args, "format", "json") == "text" else json.dumps(result, indent=2, sort_keys=True))
+        except (ValueError, OSError, KeyError, TypeError) as exc:
+            parser.error(str(exc))
+        if args.command == "evaluate":
+            raise SystemExit({"checks_passed_within_scope": 0, "checks_failed": 1, "review_required": 3}[result["outcome"]])
+        return
     db, artifacts = paths(args)
     if args.command == "benchmark":
         print(json.dumps(run_benchmark(artifacts), indent=2, sort_keys=True)); return

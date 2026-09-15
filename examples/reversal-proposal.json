@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "producer": "manual-example-v1",
+  "target_id": "J101",
+  "duplicate_of": "J100",
+  "entity": "Example Company",
+  "currency": "USD",
+  "date": "2026-08-31",
+  "lines": [
+    {"id": "R1", "account": "accounts-payable", "debit": "840.00", "credit": "0.00"},
+    {"id": "R2", "account": "office-expense", "debit": "0.00", "credit": "840.00"}
+  ],
+  "rationale": "Reverse J101, retaining J100 for the single purchase.",
+  "citations": ["E1"]
+}

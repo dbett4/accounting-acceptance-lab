@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "case_id": "synthetic-office-purchase",
+  "entity": "Example Company",
+  "currency": "USD",
+  "period_start": "2026-08-01",
+  "period_end": "2026-08-31",
+  "policy": {"version": "example-v1", "require_review": true},
+  "journals": [
+    {"id": "J100", "entity": "Example Company", "currency": "USD", "date": "2026-08-10", "purchase_id": "PUR-77", "lines": [
+      {"id": "1", "account": "office-expense", "debit": "840.00", "credit": "0.00"},
+      {"id": "2", "account": "accounts-payable", "debit": "0.00", "credit": "840.00"}
+    ]},
+    {"id": "J101", "entity": "Example Company", "currency": "USD", "date": "2026-08-11", "purchase_id": "PUR-77", "lines": [
+      {"id": "1", "account": "office-expense", "debit": "840.00", "credit": "0.00"},
+      {"id": "2", "account": "accounts-payable", "debit": "0.00", "credit": "840.00"}
+    ]}
+  ],
+  "evidence": [{"id": "E1", "kind": "duplicate_confirmation", "journal_ids": ["J100", "J101"], "text": "Synthetic source confirmation: one purchase was posted twice."}],
+  "prior_reversals": [],
+  "history_complete": true
+}

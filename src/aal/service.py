@@ -17,14 +17,19 @@ UI = """<!doctype html><html><head><meta charset=utf-8><meta name=viewport conte
 
 
 class LabServer(ThreadingHTTPServer):
+    daemon_threads = False
+
     def server_close(self):
-        self.lab.close()
+        # Join request threads before closing their shared SQLite connection.
         super().server_close()
+        self.lab.close()
 
 
 def make_server(host: str, port: int, db_path: str | Path, artifact_dir: str | Path) -> LabServer:
     lab = Lab(db_path, artifact_dir)
     class Handler(BaseHTTPRequestHandler):
+        timeout = 10  # Bound idle sockets while the server drains requests.
+
         def _json(self, value, status=200):
             body = json.dumps(value, sort_keys=True).encode()
             self.send_response(status); self.send_header("Content-Type", "application/json")
