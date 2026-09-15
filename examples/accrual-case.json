@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "case_id": "synthetic-accrual-01",
+  "scope": "Example entity / operating fund / fee revenue",
+  "currency": "USD",
+  "period_start": "2025-07-01",
+  "period_end": "2025-12-31",
+  "support_as_of": "2025-12-31",
+  "reversal": {"id": "rev-1", "amount": "920.50", "date": "2025-07-01", "source": "Synthetic GL row 1: reversal of prior-year revenue accrual"},
+  "collections": [
+    {"id": "cash-1", "amount": "120.25", "date": "2025-08-20", "source": "Synthetic receipt allocation row 2: prior-year portion only"}
+  ],
+  "outstanding": [
+    {"id": "balance-1", "amount": "300.10", "source": "Synthetic outstanding schedule row 1"},
+    {"id": "balance-2", "amount": "500.15", "source": "Synthetic outstanding schedule row 2"}
+  ],
+  "already_reflected": {"id": "existing-1", "amount": "200.00", "source": "Synthetic reporting adjustment row 1"},
+  "history_complete": true
+}

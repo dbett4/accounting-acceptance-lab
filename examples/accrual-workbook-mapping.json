@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "case_id": "synthetic-workbook-accrual",
+  "scope": "Example entity / operating fund / fee revenue / report",
+  "currency": "USD",
+  "period_start": "2025-07-01",
+  "period_end": "2025-12-31",
+  "support_as_of": "2025-12-31",
+  "history_complete": true,
+  "checks": [
+    {"ref": {"sheet": "Accrual", "cell": "A1"}, "equals": "Synthetic prior-year revenue accrual"},
+    {"ref": {"sheet": "Accrual", "cell": "A2"}, "equals": "Reversal"},
+    {"ref": {"sheet": "Accrual", "cell": "A3"}, "equals": "Prior-year portion collected"},
+    {"ref": {"sheet": "Accrual", "cell": "A4"}, "equals": "Outstanding A"},
+    {"ref": {"sheet": "Accrual", "cell": "A5"}, "equals": "Outstanding B"},
+    {"ref": {"sheet": "Accrual", "cell": "A6"}, "equals": "Already included"},
+    {"ref": {"sheet": "Accrual", "cell": "D1"}, "equals": "2025-12-31"}
+  ],
+  "reversal": {
+    "id": "reversal-1", "amount": {"cells": [{"sheet": "Accrual", "cell": "B2"}], "sign": 1},
+    "date": {"sheet": "Accrual", "cell": "C2"}, "note": "Reversal of prior-year revenue accrual"
+  },
+  "collections": [
+    {"id": "allocation-1", "amount": {"cells": [{"sheet": "Accrual", "cell": "B3"}], "sign": -1},
+     "date": {"sheet": "Accrual", "cell": "C3"}, "note": "Supported prior-year portion of collection; source uses credits as negative"}
+  ],
+  "outstanding": [
+    {"id": "balance-1", "amount": {"cells": [{"sheet": "Accrual", "cell": "B4"}], "sign": 1}, "note": "Outstanding customer A"},
+    {"id": "balance-2", "amount": {"cells": [{"sheet": "Accrual", "cell": "B5"}], "sign": 1}, "note": "Outstanding customer B"}
+  ],
+  "already_reflected": {
+    "id": "existing-1", "amount": {"cells": [{"sheet": "Accrual", "cell": "B6"}], "sign": 1}, "note": "Addback already reflected in this report"
+  }
+}

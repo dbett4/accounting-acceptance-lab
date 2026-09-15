@@ -8,6 +8,9 @@ version = "1.0.0"
 description = "Offline synthetic accounting reconciliation acceptance lab"
 requires-python = ">=3.11"
 
+[project.optional-dependencies]
+xlsx = ["openpyxl>=3.1,<4"]
+
 [project.scripts]
 aal = "aal.cli:main"
 aal-gateway = "aal.gateway_cli:main"

@@ -1,0 +1,50 @@
+{
+  "provenance": "Fictional, builder-authored acceptance scenarios. No client data, human approval, or independent-review claim. Expectations were authored before execution, not derived from evaluator output.",
+  "scenarios": [
+    {
+      "id": "SYN-A01",
+      "treatment": "A partial addback already exists. Add only the unreflected remainder.",
+      "reversal": "2400.75", "collection": "525.25",
+      "outstanding": ["875.25", "1000.25"], "already_reflected": "625.10",
+      "support_as_of": "2025-12-31", "history_complete": true,
+      "proposed_additional": "1250.40",
+      "expected": {"outcome": "checks_passed_within_scope", "total_addback": "1875.50", "additional": "1250.40", "unresolved": {}}
+    },
+    {
+      "id": "SYN-A02",
+      "treatment": "The entire addback is already included. Reject a proposal to include it again.",
+      "reversal": "1540.80", "collection": "240.15",
+      "outstanding": ["300.25", "1000.40"], "already_reflected": "1300.65",
+      "support_as_of": "2025-12-31", "history_complete": true,
+      "proposed_additional": "1300.65",
+      "expected": {"outcome": "checks_failed", "total_addback": "1300.65", "additional": "0.00", "unresolved": {"additional_adjustment": "fail"}}
+    },
+    {
+      "id": "SYN-A03",
+      "treatment": "The amounts tie, but September support does not prove the December balance. Request cutoff evidence.",
+      "reversal": "905.55", "collection": "105.15",
+      "outstanding": ["310.10", "490.30"], "already_reflected": "0.00",
+      "support_as_of": "2025-09-30", "history_complete": true,
+      "proposed_additional": "800.40",
+      "expected": {"outcome": "review_required", "total_addback": "800.40", "additional": "800.40", "unresolved": {"support_cutoff": "indeterminate"}}
+    },
+    {
+      "id": "SYN-A04",
+      "treatment": "The existing adjustment is unknown. Do not assume zero or accept the proposed full addback.",
+      "reversal": "612.25", "collection": "12.15",
+      "outstanding": ["200.05", "400.05"], "already_reflected": null,
+      "support_as_of": "2025-12-31", "history_complete": true,
+      "proposed_additional": "600.10",
+      "expected": {"outcome": "review_required", "total_addback": "600.10", "additional": null, "unresolved": {"additional_adjustment": "indeterminate"}}
+    },
+    {
+      "id": "SYN-A05",
+      "treatment": "The outstanding schedule differs by one cent. Preserve and report the mismatch; do not plug or round it away.",
+      "reversal": "1700.05", "collection": "200.01",
+      "outstanding": ["500.00", "1000.05"], "already_reflected": "0.00",
+      "support_as_of": "2025-12-31", "history_complete": true,
+      "proposed_additional": "1500.04",
+      "expected": {"outcome": "checks_failed", "total_addback": "1500.04", "additional": "1500.04", "unresolved": {"outstanding_tie": "fail"}}
+    }
+  ]
+}

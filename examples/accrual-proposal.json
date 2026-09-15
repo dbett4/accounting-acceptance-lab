@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "case_id": "synthetic-accrual-01",
+  "producer": "synthetic-example-preparer",
+  "scope": "Example entity / operating fund / fee revenue",
+  "currency": "USD",
+  "date": "2025-12-31",
+  "additional_adjustment": "600.25"
+}

@@ -17,6 +17,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Install workbook intake dependencies
+        run: python -m pip install ".[xlsx]"
       - name: Run offline proof
         run: bash scripts/proof.sh
       - name: Build container

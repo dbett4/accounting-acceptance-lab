@@ -21,6 +21,16 @@ def main(argv=None):
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("demo")
     sub.add_parser("benchmark")
+    accrual = sub.add_parser("reconcile-accrual", help="Check a scoped revenue accrual addback without posting")
+    accrual_input = accrual.add_mutually_exclusive_group(required=True)
+    accrual_input.add_argument("--case", help="Prepared JSON case; requires --proposal")
+    accrual_input.add_argument("--workbook", help="XLSX source; requires --mapping, --additional-adjustment and --producer")
+    accrual.add_argument("--proposal")
+    accrual.add_argument("--mapping", help="Reviewed reusable XLSX layout mapping")
+    accrual.add_argument("--additional-adjustment", help="Signed USD amount to add now; use =-49.75 for a negative amount")
+    accrual.add_argument("--producer", help="Locally asserted proposal author, not an authenticated reviewer")
+    accrual.add_argument("--out", required=True)
+    accrual.add_argument("--format", choices=("json", "text"), default="json")
     for command in ("evaluate", "review-proposal"):
         p = sub.add_parser(command)
         p.add_argument("--case", required=True)
@@ -51,6 +61,26 @@ def main(argv=None):
     replay = sub.add_parser("replay"); replay.add_argument("idempotency_key")
     serve = sub.add_parser("serve"); serve.add_argument("--host", default="127.0.0.1"); serve.add_argument("--port", type=int, default=8080)
     args = parser.parse_args(argv)
+    if args.command == "reconcile-accrual":
+        from .accrual import evaluate_accrual, format_accrual_text
+        from .evaluation import load
+        if args.workbook:
+            if args.proposal is not None or any(value is None for value in (args.mapping, args.additional_adjustment, args.producer)):
+                parser.error("--workbook requires --mapping, --additional-adjustment and --producer; --proposal is not allowed")
+        elif args.proposal is None or any(value is not None for value in (args.mapping, args.additional_adjustment, args.producer)):
+            parser.error("--case requires --proposal; workbook mapping/amount/producer options are not allowed")
+        try:
+            if args.workbook:
+                from .accrual_intake import reconcile_workbook
+                result = reconcile_workbook(args.workbook, load(args.mapping), args.additional_adjustment, args.producer)
+            else:
+                result = evaluate_accrual(load(args.case), load(args.proposal))
+            with Path(args.out).open("x", encoding="utf-8") as output:
+                output.write(json.dumps(result, indent=2, sort_keys=True) + "\n")
+            print(format_accrual_text(result) if args.format == "text" else json.dumps(result, indent=2, sort_keys=True))
+        except (ValueError, OSError, KeyError, TypeError) as exc:
+            parser.error(str(exc))
+        raise SystemExit({"checks_passed_within_scope": 0, "checks_failed": 1, "review_required": 3}[result["outcome"]])
     if args.command in {"evaluate-batch", "compare-batches"}:
         from .batch import compare_batches, evaluate_batch, exit_code, format_batch_text
         from .evaluation import load
